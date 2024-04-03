@@ -10,15 +10,17 @@ repeat task.wait()
 		end
 	end)
 until game:GetService("Players").LocalPlayer:FindFirstChild('Honeycomb')
-
-local convertion = {
-	['Vector3'] = function(pos)
-		return pos
-	end,
-	['CFrame'] = function(pos)
-		return pos.Position
-	end,
-}
+function convertpos(pos)
+	local convertion = {
+		['Vector3'] = function(pos)
+			return pos
+		end,
+		['CFrame'] = function(pos)
+			return pos.Position
+		end,
+	}
+	return convertion[typeof(pos)](pos)
+end
 
 getgenv().Script_Setting = {}
 
@@ -56,7 +58,6 @@ function LoadSetting()
 	end
 end
 
-
 function LocalPlayer() : Player
 	return game:GetService("Players").LocalPlayer
 end
@@ -70,13 +71,49 @@ function HumanoidRootPart() : BasePart
 end
 
 function Magnitude(pos : Vector3) : number
-    if typeof(pos) ~= "Vector3" then return end
-	return (HumanoidRootPart().Position - pos).Magnitude
+	return (HumanoidRootPart().Position - convertpos(pos)).Magnitude
 end
 
 function WalkTo(pos : Vector3)
-	local new_pos = convertion[typeof(pos)](pos)
+	local new_pos = convertpos(pos)
 	Character().Humanoid:MoveTo(pos)
+end
+
+
+function Create_BC()
+	if not HumanoidRootPart():FindFirstChild("BC") then
+		local Noclip : BodyVelocity = Instance.new("BodyVelocity",HumanoidRootPart())
+		Noclip.Name = "BC"
+		Noclip.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
+		Noclip.Velocity = Vector3.new(0,0,0)
+	end
+end
+
+
+function Remove_BC()
+	if HumanoidRootPart():FindFirstChild("BC") then
+		HumanoidRootPart():FindFirstChild("BC"):Destroy()
+	end
+end
+
+function Tween(Pos)
+	local Features = {}
+	local Speed : number;
+	local Dis : number = Magnitude(Pos)
+	if Dis < 1000 then
+		Speed = 300
+	elseif Dis >= 100 then
+		Speed = 200
+	end
+	local TService = game:GetService("TweenService")
+	print(HumanoidRootPart().Position.Y - convertpos(Pos).Y)
+	if Magnitude(Pos) <= 120 and HumanoidRootPart().Position.Y - convertpos(Pos).Y >= -5 then
+		Remove_BC()
+		WalkTo(Pos)
+	else
+		_G.Tween = TService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = Point})
+		Create_BC()
+	end
 end
 
 function FindDetectPart(size : number?, MaxPart: number?, Filter : Instance?) : BasePart
@@ -154,7 +191,7 @@ local Tabs = {
 local Group = {
 	Main_Group = Tabs.General:AddLeftGroupbox('Main')
 }  
-  
+
 Group.Main_Group:AddToggle('Auto Farm Pollen', {
     Text = 'Auto Farm Pollen',
     Default = false,
@@ -166,10 +203,9 @@ task.spawn(function()
     while true do task.wait()
 		local succes , response = pcall(function()
 			if getgenv().Script_Setting['Auto_Farm'] then
-				local target = GetTarget('Rose Field')
-				print(target)
+				local target : BasePart = GetTarget('Rose Field')
 				repeat task.wait()
-					WalkTo(target.Position)
+					Tween(target.Position)
 					Character().Humanoid.WalkSpeed = 90
 				until Magnitude(target.Position) <= 5 or not target.Parent or not target
 			end
