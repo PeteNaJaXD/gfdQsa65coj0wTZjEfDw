@@ -163,7 +163,7 @@ task.spawn(function()
 				until Magnitude(target.Position) <= 5 or not target.Parent or not target
 			end
 		end)
-		if not succes then print(response) end
+		if not succes then warn(response) end
     end
 end)
 --
