@@ -206,7 +206,7 @@ local Group = {
 	Main_Group = Tabs.General:AddLeftGroupbox('Main')
 }  
 Group.Main_Group:AddDropdown('Select Field', {
-	Text = 'Select Field'
+	Text = 'Select Field',
 	Values = Insert_FlowerZones(),
 	Default = getgenv().Script_Setting['Selected Field']
 }):OnChanged(function(v)
