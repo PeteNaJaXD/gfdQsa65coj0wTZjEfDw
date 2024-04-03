@@ -205,18 +205,45 @@ end)
 task.spawn(function()
     while true do task.wait()
 		local succes , response = pcall(function()
-			if getgenv().Script_Setting['Auto_Farm'] then
-				local target : BasePart = GetTarget('Rose Field')
-				repeat task.wait()
-					Tween(target.Position)
-					Character().Humanoid.WalkSpeed = 90
-				until Magnitude(target.Position) <= 5 or not target.Parent or not target
+			if getgenv().Script_Setting['Auto_Farm'] then 
+				if Check_Capacity() < 100 then
+					local target : BasePart = GetTarget('Rose Field')
+					repeat task.wait()
+						Tween(target.Position)
+						Character().Humanoid.WalkSpeed = 90
+					until Magnitude(target.Position) <= 5 or not target.Parent or not target
+				else
+					repeat task.wait() 
+						Tween(LocalPlayer().SpawnPos.Value.Position) 
+						if Magnitude(LocalPlayer().SpawnPos.Value.Position) <= 10 and LocalPlayer().PlayerGui.ScreenGui.ActivateButton.TextBox.Text == 'Make Honey' then
+							game:GetService("ReplicatedStorage").Events.PlayerHiveCommand:FireServer("ToggleHoneyMaking")
+							task.wait(.25)
+						end
+					until Check_Capacity() <= 0 or not getgenv().Script_Setting['Auto_Farm']
+					task.wait(5.75)
+				end
 			end
 		end)
 		if not succes then warn(response) end
     end
 end)
 
+--[[
+repeat task.wait() 
+					Tween(LocalPlayer().SpawnPos.Value.Position) 
+					if Magnitude(LocalPlayer().SpawnPos.Value.Position) <= 10 and GetActivateButton('Make Honey') then
+						game:GetService("ReplicatedStorage").Events.PlayerHiveCommand:FireServer("ToggleHoneyMaking")
+						task.wait(.25)
+					end
+				until Check_Capacity() <= 0 or not getgenv().Script_Setting.Auto_Farm or GetKeyTag()
+				if not getgenv().Script_Setting.Auto_Farm then
+					Remove_BC()
+					return
+				end
+				task.wait(Get_Maximum_Cells()/Make_Honey_Cooldown()+5)
+]]
+
+--Check_Capacity()
 warn('Anti-AFK Activated Enjoy :)')
 local vu = game:GetService("VirtualUser")
 game:GetService("Players").LocalPlayer.Idled:connect(function()
