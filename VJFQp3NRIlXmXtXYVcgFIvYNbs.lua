@@ -11,6 +11,15 @@ repeat task.wait()
 	end)
 until game:GetService("Players").LocalPlayer:FindFirstChild('Honeycomb')
 
+local convertion = {
+	['Vector3'] = function(pos)
+		return pos
+	end,
+	['CFrame'] = function(pos)
+		return pos.Position
+	end,
+}
+
 getgenv().Script_Setting = {}
 
 function CreateFile()
@@ -67,7 +76,7 @@ end
 
 function WalkTo(pos : Vector3)
 	local new_pos = convertion[typeof(pos)](pos)
-	Character().Humanoid:MoveTo(new_pos)
+	Character().Humanoid:MoveTo(pos)
 end
 
 function FindDetectPart(size : number?, MaxPart: number?, Filter : Instance?) : BasePart
