@@ -151,9 +151,11 @@ local Tabs = {
     ['UI Settings'] = Window:AddTab('Settings'),
 }
 
-local General_Group = Tabs.General:AddLeftGroupbox('Group')
-                 
-General_Group:AddToggle('Auto Farm Pollen', {
+local Group = {
+	Main_Group = Tabs.General:AddLeftGroupbox('Main')
+}  
+  
+Group.Main_Group:AddToggle('Auto Farm Pollen', {
     Text = 'Auto Farm Pollen',
     Default = false,
 }):OnChanged(function(v)
@@ -175,4 +177,14 @@ task.spawn(function()
 		if not succes then warn(response) end
     end
 end)
+
+warn('Anti-AFK Activated Enjoy :)')
+local vu = game:GetService("VirtualUser")
+game:GetService("Players").LocalPlayer.Idled:connect(function()
+	vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+	task.wait()
+	vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+	warn('Fire Anti Kick')
+end)
+
 --
