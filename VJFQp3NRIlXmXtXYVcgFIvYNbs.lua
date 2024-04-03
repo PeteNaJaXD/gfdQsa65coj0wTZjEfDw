@@ -107,7 +107,7 @@ function Tween(Pos)
 	end
 	local TService = game:GetService("TweenService")
 	print(HumanoidRootPart().Position.Y - convertpos(Pos).Y)
-	if Magnitude(Pos) <= 120 and HumanoidRootPart().Position.Y - convertpos(Pos).Y >= -5 then
+	if Magnitude(Pos) <= 120 and HumanoidRootPart().Position.Y - convertpos(Pos).Y <= -5 then
 		Remove_BC()
 		WalkTo(Pos)
 	else
