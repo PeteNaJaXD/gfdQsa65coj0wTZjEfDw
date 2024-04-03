@@ -228,7 +228,7 @@ task.spawn(function()
 		local succes , response = pcall(function()
 			if getgenv().Script_Setting['Auto_Farm'] then 
 				if Check_Capacity() < 100 then
-					local target : BasePart = GetTarget('Rose Field')
+					local target : BasePart = GetTarget(getgenv().Script_Setting['Selected Field'])
 					repeat task.wait()
 						Tween(target.Position)
 						Character().Humanoid.WalkSpeed = 90
