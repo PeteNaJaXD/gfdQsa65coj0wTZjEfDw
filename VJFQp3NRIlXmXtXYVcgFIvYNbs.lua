@@ -156,6 +156,7 @@ task.spawn(function()
 		local succes , response = pcall(function()
 			if getgenv().Script_Setting['Auto_Farm'] then
 				local target = GetTarget('Rose Field')
+				print(target)
 				repeat task.wait()
 					WalkTo(target.Position)
 					Character().Humanoid.WalkSpeed = 90
