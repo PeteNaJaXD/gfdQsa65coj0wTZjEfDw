@@ -106,12 +106,13 @@ function Tween(Pos)
 		Speed = 200
 	end
 	local TService = game:GetService("TweenService")
-	print(HumanoidRootPart().Position.Y - convertpos(Pos).Y)
-	if Magnitude(Pos) <= 120 and HumanoidRootPart().Position.Y - convertpos(Pos).Y <= -5 then
+	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
+	if Magnitude(Pos) <= 120 and Height <= -5 or Height >= 10 then
 		Remove_BC()
 		WalkTo(Pos)
 	else
 		_G.Tween = TService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = Point})
+		_G.Tween:Play()
 		Create_BC()
 	end
 end
