@@ -100,6 +100,7 @@ function Tween(Pos)
 	local Features = {}
 	local Speed : number;
 	local Dis : number = Magnitude(Pos)
+	local CPos = CFrame.new(convertpos(Pos))
 	if Dis < 1000 then
 		Speed = 300
 	elseif Dis >= 100 then
@@ -108,8 +109,8 @@ function Tween(Pos)
 	local TService = game:GetService("TweenService")
 	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
 	print(Height)
-	if Magnitude(Pos) >= 120 and Height <= -5 or Height >= 10 then
-		_G.Tween = TService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = Point})
+	if Dis >= 120 and Height <= -5 or Height >= 10 then
+		_G.Tween = TService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
 		_G.Tween:Play()
 		Create_BC()
 	else
