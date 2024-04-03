@@ -205,6 +205,7 @@ local Tabs = {
 local Group = {
 	Main_Group = Tabs.General:AddLeftGroupbox('Main')
 }  
+print(#Insert_FlowerZones())
 Group.Main_Group:AddDropdown('Select Field', {
 	Text = 'Select Field',
 	Values = Insert_FlowerZones(),
