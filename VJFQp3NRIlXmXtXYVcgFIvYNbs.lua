@@ -162,6 +162,17 @@ function GetTarget(Field) : BasePart
 	return GetToken() or GetFlowers(Field) or game:GetService("Workspace").FlowerZones:FindFirstChild(Field)
 end
 
+function Insert_FlowerZones()
+	local FlowerZones = {}
+	for i,v in pairs(game:GetService("Workspace").FlowerZones:GetChildren()) do
+		if v.Name ~= 'Ant Field' or v.Name ~= 'Hub Field' then
+			table.insert(FlowerZones, v.Name)
+		end
+	end
+	table.sort(FlowerZones)
+	return FlowerZones
+end
+
 function Check_Capacity() : number
 	local CoreStats : Folder = LocalPlayer().CoreStats
 	return (CoreStats.Pollen.Value / CoreStats.Capacity.Value) * 100 
@@ -194,12 +205,22 @@ local Tabs = {
 local Group = {
 	Main_Group = Tabs.General:AddLeftGroupbox('Main')
 }  
+Group.Main_Group:AddDropdown('Select Field', {
+	Text = 'Select Field'
+	Values = Insert_FlowerZones(),
+	Default = getgenv().Script_Setting['Selected Field']
+}):OnChanged(function(v)
+    getgenv().Script_Setting['Selected Field'] = v
+	SaveSetting()
+end) 
+
 
 Group.Main_Group:AddToggle('Auto Farm Pollen', {
     Text = 'Auto Farm Pollen',
-    Default = false,
+    Default = getgenv().Script_Setting['Auto_Farm'],
 }):OnChanged(function(v)
     getgenv().Script_Setting['Auto_Farm'] = v
+	SaveSetting()
 end) 
 
 task.spawn(function()
