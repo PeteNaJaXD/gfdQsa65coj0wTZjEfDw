@@ -30,11 +30,10 @@ function CreateFile()
 	local Folder_Name =  'CFrame Hub'
 	local Sub_Folder = `{Folder_Name}/{PlaceID}`
     local File_Name = `{Sub_Folder}/{Player}.json`
-
+	print(File_Name)
 	if not isfolder(Folder_Name) then makefolder(Folder_Name) end
 	if not isfolder(Sub_Folder) then makefolder(Sub_Folder) end
 	if not isfile(File_Name) then writefile(File_Name,'') end
-
 end
 
 function SaveSetting()
