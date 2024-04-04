@@ -27,17 +27,22 @@ getgenv().Script_Setting = {}
 function CreateFile()
 	local PlaceID : number = game.PlaceId
     local Player : string = game.Players.LocalPlayer.Name
-	local Folder_Name = string.format('CFrame Hub/%s',PlaceID)
-   -- local File_Name = string.format(Folder_Name..'/%s.json',PlaceID,Player)
-	if not isfolder('CFrame Hub') then makefolder('CFrame Hub') end
+	local Folder_Name =  'CFrame Hub'
+	local Sub_Folder = `{Folder_Name}/{PlaceID}`
+    local File_Name = `{Sub_Folder}/{Player}.json`
+
 	if not isfolder(Folder_Name) then makefolder(Folder_Name) end
+	if not isfolder(Sub_Folder) then makefolder(Sub_Folder) end
+	if not isfile(File_Name) then writefile(File_Name,'') end
+
 end
 
 function SaveSetting()
 	local PlaceID : number = game.PlaceId
     local Player : string = game.Players.LocalPlayer.Name
 	local Folder_Name =  'CFrame Hub'
-    local File_Name = `{Folder_Name}/{Player}.json`
+	local Sub_Folder = `{Folder_Name}/{PlaceID}`
+    local File_Name = `{Sub_Folder}/{Player}.json`
 
 	local HttpService = game:GetService('HttpService')
 	local Encode = HttpService:JSONEncode(getgenv().Script_Setting)
@@ -50,7 +55,8 @@ function LoadSetting()
 	local PlaceID : number = game.PlaceId
     local Player : string = game.Players.LocalPlayer.Name
 	local Folder_Name =  'CFrame Hub'
-    local File_Name = `{Folder_Name}/{Player}.json`
+	local Sub_Folder = `{Folder_Name}/{PlaceID}`
+    local File_Name = `{Sub_Folder}/{Player}.json`
 
 	local HttpService = game:GetService('HttpService')
 	local Decode = HttpService:JSONDecode(readfile(File_Name))
