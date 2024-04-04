@@ -32,6 +32,9 @@ local HttpService = game:GetService('HttpService')
 
 getgenv().Script_Setting = {}
 
+local Encode = HttpService:JSONEncode(getgenv().Script_Setting)
+local Decode = HttpService:JSONDecode(readfile(File_Name))
+
 function CreateFile()
 --[[ 	local PlaceID : number = game.PlaceId
     local Player : string = game.Players.LocalPlayer.Name
@@ -41,14 +44,14 @@ function CreateFile()
 	print(File_Name)
 	if not isfolder(Folder_Name) then makefolder(Folder_Name) end
 	if not isfolder(Sub_Folder) then makefolder(Sub_Folder) end
-	if not isfile(File_Name) then writefile(File_Name,'') end
+	if not isfile(File_Name) then writefile(File_Name, Encode) end
 end
 
 function SaveSetting()
-	local Encode = HttpService:JSONEncode(getgenv().Script_Setting)
+	
     print(Encode)
-	if not isfile(File_Name) then writefile(File_Name,Encode) end
-	writefile(File_Name,Encode)
+	if not isfile(File_Name) then writefile(File_Name, Encode) end
+	writefile(File_Name, Encode)
 end
 
 function LoadSetting()
@@ -59,7 +62,7 @@ function LoadSetting()
     local File_Name = `{Sub_Folder}/{Player}.json`
 
 	local HttpService = game:GetService('HttpService') *]]
-	local Decode = HttpService:JSONDecode(readfile(File_Name))
+	
 	print(Decode)
 	if isfile(File_Name) then
 		getgenv().Script_Setting = Decode
