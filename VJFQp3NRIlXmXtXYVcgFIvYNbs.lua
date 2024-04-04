@@ -118,9 +118,10 @@ function Tween(Pos)
 	local TService = game:GetService("TweenService")
 	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
 
-	print(Height)
+	
 
-	if Dis >= 120 or Height <= -3 or Height >= 10 then
+	if Dis >= 120 or Height <= -5 or Height >= 10 then
+		print(Height)
 		_G.Tween = TService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
 		_G.Tween:Play()
 		Create_BC()
@@ -128,6 +129,15 @@ function Tween(Pos)
 		Remove_BC()
 		WalkTo(Pos)
 	end
+end
+
+function NoClip(Statement)
+	for i,v in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
+		if v:IsA('BasePart') then
+			v.CanCollide = not Statement
+		end
+	end
+	
 end
 
 function FindDetectPart(size : number?, MaxPart: number?, Filter : Instance?) : BasePart
@@ -239,6 +249,7 @@ task.spawn(function()
     while true do task.wait()
 		local succes , response = pcall(function()
 			if getgenv().Script_Setting['Auto_Farm'] and getgenv().Script_Setting['Selected Field'] then 
+				NoClip(true)
 				if Check_Capacity() < 100 then
 					local target : BasePart = GetTarget(getgenv().Script_Setting['Selected Field'])
 					repeat task.wait()
