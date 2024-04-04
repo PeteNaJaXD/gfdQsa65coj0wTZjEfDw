@@ -118,9 +118,9 @@ function Tween(Pos)
 	local TService = game:GetService("TweenService")
 	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
 
-	print(Dis >= 120 , Height <= -3 , Height >= 10)
+	print(Height)
 
-	if Dis >= 120 or Height <= -2 or Height >= 10 then
+	if Dis >= 120 or Height <= -3 or Height >= 10 then
 		_G.Tween = TService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
 		_G.Tween:Play()
 		Create_BC()
