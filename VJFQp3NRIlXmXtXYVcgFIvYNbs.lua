@@ -22,14 +22,20 @@ function convertpos(pos)
 	return convertion[typeof(pos)](pos)
 end
 
+local PlaceID : number = game.PlaceId
+local Player : number = game.Players.LocalPlayer.UserId 
+local Folder_Name =  'CFrame Hub'
+local Sub_Folder = `{Folder_Name}/{PlaceID}`
+local File_Name = `{Sub_Folder}/{Player}.json`
+local HttpService = game:GetService('HttpService')
 getgenv().Script_Setting = {}
 
 function CreateFile()
-	local PlaceID : number = game.PlaceId
+--[[ 	local PlaceID : number = game.PlaceId
     local Player : string = game.Players.LocalPlayer.Name
 	local Folder_Name =  'CFrame Hub'
 	local Sub_Folder = `{Folder_Name}/{PlaceID}`
-    local File_Name = `{Sub_Folder}/{Player}.json`
+    local File_Name = `{Sub_Folder}/{Player}.json` *]]
 	print(File_Name)
 	if not isfolder(Folder_Name) then makefolder(Folder_Name) end
 	if not isfolder(Sub_Folder) then makefolder(Sub_Folder) end
@@ -37,13 +43,6 @@ function CreateFile()
 end
 
 function SaveSetting()
-	local PlaceID : number = game.PlaceId
-    local Player : string = game.Players.LocalPlayer.Name
-	local Folder_Name =  'CFrame Hub'
-	local Sub_Folder = `{Folder_Name}/{PlaceID}`
-    local File_Name = `{Sub_Folder}/{Player}.json`
-
-	local HttpService = game:GetService('HttpService')
 	local Encode = HttpService:JSONEncode(getgenv().Script_Setting)
     print(Encode)
 	if not isfile(File_Name) then writefile(File_Name,Encode) end
@@ -51,13 +50,13 @@ function SaveSetting()
 end
 
 function LoadSetting()
-	local PlaceID : number = game.PlaceId
+--[[ 	local PlaceID : number = game.PlaceId
     local Player : string = game.Players.LocalPlayer.Name
 	local Folder_Name =  'CFrame Hub'
 	local Sub_Folder = `{Folder_Name}/{PlaceID}`
     local File_Name = `{Sub_Folder}/{Player}.json`
 
-	local HttpService = game:GetService('HttpService')
+	local HttpService = game:GetService('HttpService') *]]
 	local Decode = HttpService:JSONDecode(readfile(File_Name))
 	print(Decode)
 	if isfile(File_Name) then
