@@ -36,25 +36,27 @@ end
 function SaveSetting()
 	local PlaceID : number = game.PlaceId
     local Player : string = game.Players.LocalPlayer.Name
-	local Folder_Name = string.format('CFrame Hub/%s',PlaceID)
-    local File_Name = string.format(Folder_Name..'/%s.json',Player)
+	local Folder_Name =  'CFrame Hub'
+    local File_Name = `{Folder_Name}/{Player}.json`
 
 	local HttpService = game:GetService('HttpService')
 	local Encode = HttpService:JSONEncode(getgenv().Script_Setting)
-    
+    print(Encode)
 	if not isfile(File_Name) then writefile(File_Name,Encode) end
+	writefile(File_Name,Encode)
 end
 
 function LoadSetting()
 	local PlaceID : number = game.PlaceId
     local Player : string = game.Players.LocalPlayer.Name
-	local Folder_Name = string.format('CFrame Hub/%s',PlaceID)
-    local File_Name = string.format(Folder_Name..'/%s.json',Player)
+	local Folder_Name =  'CFrame Hub'
+    local File_Name = `{Folder_Name}/{Player}.json`
 
 	local HttpService = game:GetService('HttpService')
-
+	local Decode = HttpService:JSONDecode(readfile(File_Name))
+	print(Decode)
 	if isfile(File_Name) then
-		getgenv().Script_Setting = HttpService:JSONDecode(readfile(File_Name))
+		getgenv().Script_Setting = Decode
 	end
 end
 
@@ -108,7 +110,9 @@ function Tween(Pos)
 	end
 	local TService = game:GetService("TweenService")
 	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
-	if Dis >= 120 and Height <= -5 or Height >= 10 then
+	print(Height)
+	print(Dis >= 120 and (Height <= 0 or Height >= 10) , Dis >= 120 and Height <= 0 or Height >= 10)
+	if Dis >= 120 and (Height <= 0 or Height >= 10) then
 		_G.Tween = TService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
 		_G.Tween:Play()
 		Create_BC()
@@ -203,8 +207,8 @@ local Tabs = {
 
 local Group = {
 	Main_Group = Tabs.General:AddLeftGroupbox('Main')
-}  
-print(#Insert_FlowerZones())
+}
+
 Group.Main_Group:AddDropdown('Select Field', {
 	Text = 'Select Field',
 	Values = Insert_FlowerZones(),
@@ -226,13 +230,14 @@ end)
 task.spawn(function()
     while true do task.wait()
 		local succes , response = pcall(function()
-			if getgenv().Script_Setting['Auto_Farm'] then 
+			if getgenv().Script_Setting['Auto_Farm'] and getgenv().Script_Setting['Selected Field'] then 
 				if Check_Capacity() < 100 then
 					local target : BasePart = GetTarget(getgenv().Script_Setting['Selected Field'])
 					repeat task.wait()
 						Tween(target.Position)
 						Character().Humanoid.WalkSpeed = 90
-					until Magnitude(target.Position) <= 5 or not target.Parent or not target
+					until Magnitude(target.Position) <= 5 or not target.Parent or not target or Check_Capacity() >= 100
+					if not getgenv().Script_Setting['Auto_Farm'] then _G.Tween:Cancel() end
 				else
 					repeat task.wait() 
 						Tween(LocalPlayer().SpawnPos.Value.Position) 
@@ -241,7 +246,8 @@ task.spawn(function()
 							task.wait(.25)
 						end
 					until Check_Capacity() <= 0 or not getgenv().Script_Setting['Auto_Farm']
-					task.wait(5.75)
+					if not getgenv().Script_Setting['Auto_Farm'] then _G.Tween:Cancel() end
+					task.wait(6)
 				end
 			end
 		end)
@@ -249,23 +255,7 @@ task.spawn(function()
     end
 end)
 
---[[
-repeat task.wait() 
-					Tween(LocalPlayer().SpawnPos.Value.Position) 
-					if Magnitude(LocalPlayer().SpawnPos.Value.Position) <= 10 and GetActivateButton('Make Honey') then
-						game:GetService("ReplicatedStorage").Events.PlayerHiveCommand:FireServer("ToggleHoneyMaking")
-						task.wait(.25)
-					end
-				until Check_Capacity() <= 0 or not getgenv().Script_Setting.Auto_Farm or GetKeyTag()
-				if not getgenv().Script_Setting.Auto_Farm then
-					Remove_BC()
-					return
-				end
-				task.wait(Get_Maximum_Cells()/Make_Honey_Cooldown()+5)
-]]
-
---Check_Capacity()
-warn('Anti-AFK Activated Enjoy :)')
+print('Anti-AFK Activated Enjoy :)')
 local vu = game:GetService("VirtualUser")
 game:GetService("Players").LocalPlayer.Idled:connect(function()
 	vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
