@@ -120,7 +120,7 @@ function Tween(Pos)
 
 	
 
-	if Dis >= 120 or Height <= -5 or Height >= 10 then
+	if Dis >= 120 or Height <= -7 or Height >= 10 then
 		print(Height)
 		_G.Tween = TService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
 		_G.Tween:Play()
