@@ -118,8 +118,6 @@ function Tween(Pos)
 	local TService = game:GetService("TweenService")
 	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
 
-	
-
 	if Dis >= 120 or Height <= -7 or Height >= 10 then
 		print(Height)
 		_G.Tween = TService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
@@ -131,8 +129,8 @@ function Tween(Pos)
 	end
 end
 
-function NoClip(Statement)
-	for i,v in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
+function NoClip(Statement : boolean)
+	for _,v in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
 		if v:IsA('BasePart') then
 			v.CanCollide = not Statement
 		end
@@ -254,7 +252,7 @@ task.spawn(function()
 					local target : BasePart = GetTarget(getgenv().Script_Setting['Selected Field'])
 					repeat task.wait()
 						Tween(target.Position)
-						Character().Humanoid.WalkSpeed = 90
+						Character().Humanoid.WalkSpeed = 70
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
 					until not getgenv().Script_Setting['Auto_Farm'] or Magnitude(target.Position) <= 5 or not target.Parent or not target or Check_Capacity() >= 100
 					if not getgenv().Script_Setting['Auto_Farm'] then Remove_BC();_G.Tween:Cancel() end
