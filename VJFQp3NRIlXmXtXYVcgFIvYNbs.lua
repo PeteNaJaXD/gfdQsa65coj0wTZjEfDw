@@ -117,15 +117,22 @@ function Tween(Pos)
 	end
 	local TService = game:GetService("TweenService")
 	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
-
-	if Dis >= 120 or Height <= -7 or Height >= 10 then
-		print(Height)
-		_G.Tween = TService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
-		_G.Tween:Play()
-		Create_BC()
-	else
+	if (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 <= 50 then
+		repeat task.wait()
+			TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = HumanoidRootPart().CFrame*CFrame.new(0,80,0)}):Play()
+			Create_BC()
+		until (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 >= 80
 		Remove_BC()
-		WalkTo(Pos)
+	else
+		if Dis >= 120 or Height <= -7 or Height >= 10 then
+			print(Height)
+			_G.Tween = TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
+			_G.Tween:Play()
+			Create_BC()
+		else
+			Remove_BC()
+			WalkTo(Pos)
+		end
 	end
 end
 
