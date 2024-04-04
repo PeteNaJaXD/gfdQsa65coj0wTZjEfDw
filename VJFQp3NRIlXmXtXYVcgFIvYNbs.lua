@@ -115,9 +115,9 @@ function Tween(Pos)
 	end
 	local TService = game:GetService("TweenService")
 	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
-	print(Height)
-	print(Dis >= 120 and (Height <= 0 or Height >= 10) , Dis >= 120 and Height <= 0 or Height >= 10)
-	if Dis >= 120 and (Height <= 0 or Height >= 10) then
+	local Height_Condition = Height <= 0 or Height >= 10
+	print(Height_Condition)
+	if Dis >= 120 andHeight_Condition then
 		_G.Tween = TService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
 		_G.Tween:Play()
 		Create_BC()
@@ -242,7 +242,7 @@ task.spawn(function()
 						Tween(target.Position)
 						Character().Humanoid.WalkSpeed = 90
 					until not getgenv().Script_Setting['Auto_Farm'] or Magnitude(target.Position) <= 5 or not target.Parent or not target or Check_Capacity() >= 100
-					if not getgenv().Script_Setting['Auto_Farm'] then _G.Tween:Cancel() end
+					if not getgenv().Script_Setting['Auto_Farm'] then Remove_BC();_G.Tween:Cancel() end
 				else
 					repeat task.wait() 
 						Tween(LocalPlayer().SpawnPos.Value.Position) 
@@ -251,7 +251,7 @@ task.spawn(function()
 							task.wait(.25)
 						end
 					until Check_Capacity() <= 0 or not getgenv().Script_Setting['Auto_Farm']
-					if not getgenv().Script_Setting['Auto_Farm'] then _G.Tween:Cancel() end
+					if not getgenv().Script_Setting['Auto_Farm'] then Remove_BC();_G.Tween:Cancel() end
 					task.wait(6)
 				end
 			end
