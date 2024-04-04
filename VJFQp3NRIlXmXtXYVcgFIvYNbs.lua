@@ -118,8 +118,8 @@ function Tween(Pos)
 	local TService = game:GetService("TweenService")
 	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
 
-	print(Dis >= 120 , Height <= -2 , Height >= 10)
-	
+	print(Dis >= 120 , Height <= -3 , Height >= 10)
+
 	if Dis >= 120 or Height <= -2 or Height >= 10 then
 		_G.Tween = TService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
 		_G.Tween:Play()
@@ -152,7 +152,7 @@ function GetFlowers(Field : string)
 	local FP_ID : string = 'FP'..tostring(ZoneID)
 	for _, v : BasePart in pairs(FindDetectPart(70, 30, game.Workspace.Flowers)) do
 		local FP = string.split(v.Name,'-')
-		if not hash[v] and Magnitude(v.Position) > 20 and FP[1] == FP_ID then
+		if not hash[v] and Magnitude(v.Position) > math.random(20, 50) and FP[1] == FP_ID then
 			hash[v] = true
 			return v
 		end
