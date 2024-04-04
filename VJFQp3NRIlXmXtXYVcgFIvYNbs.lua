@@ -236,7 +236,7 @@ task.spawn(function()
 					repeat task.wait()
 						Tween(target.Position)
 						Character().Humanoid.WalkSpeed = 90
-					until Magnitude(target.Position) <= 5 or not target.Parent or not target or Check_Capacity() >= 100
+					until not getgenv().Script_Setting['Auto_Farm'] or Magnitude(target.Position) <= 5 or not target.Parent or not target or Check_Capacity() >= 100
 					if not getgenv().Script_Setting['Auto_Farm'] then _G.Tween:Cancel() end
 				else
 					repeat task.wait() 
