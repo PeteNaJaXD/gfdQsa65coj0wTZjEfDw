@@ -244,6 +244,7 @@ task.spawn(function()
 					repeat task.wait()
 						Tween(target.Position)
 						Character().Humanoid.WalkSpeed = 90
+						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
 					until not getgenv().Script_Setting['Auto_Farm'] or Magnitude(target.Position) <= 5 or not target.Parent or not target or Check_Capacity() >= 100
 					if not getgenv().Script_Setting['Auto_Farm'] then Remove_BC();_G.Tween:Cancel() end
 				else
