@@ -108,9 +108,9 @@ function Tween(Pos)
 	end
 	local TService = game:GetService("TweenService")
 	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
-	if (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 <= 50 then
+	if getgenv.Script_Setting['Safe_Mode'] and (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 <= 50 then
 		repeat task.wait()
-			TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = HumanoidRootPart().CFrame*CFrame.new(0,80,0)}):Play()
+			TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos*CFrame.new(0,80,0)}):Play()
 			Create_BC()
 		until (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 >= 80
 		Remove_BC()
@@ -245,6 +245,14 @@ Group.Main_Group:AddToggle('Auto Farm Pollen', {
     Default = getgenv().Script_Setting['Auto_Farm'],
 }):OnChanged(function(v)
     getgenv().Script_Setting['Auto_Farm'] = v
+	SaveSetting()
+end) 
+
+Group.Setting_Group:AddToggle('Safe Mode', {
+    Text = 'Safe Mode',
+    Default = getgenv().Script_Setting['Safe_Mode'],
+}):OnChanged(function(v)
+    getgenv().Script_Setting['Safe_Mode'] = v
 	SaveSetting()
 end) 
 
