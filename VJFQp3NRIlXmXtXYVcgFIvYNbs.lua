@@ -108,7 +108,7 @@ function Tween(Pos)
 	end
 	local TService = game:GetService("TweenService")
 	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
-	if getgenv.Script_Setting['Safe_Mode'] and (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 <= 50 then
+	if getgenv().Script_Setting['Safe_Mode'] and (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 <= 50 then
 		repeat task.wait()
 			TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos*CFrame.new(0,80,0)}):Play()
 			Create_BC()
@@ -250,7 +250,7 @@ Group.Main_Group:AddToggle('Auto Farm Pollen', {
 end) 
 
 Group.Setting_Group:AddToggle('No Clip', {
-    Text = 'Safe Mode',
+    Text = 'No Clip',
     Default = getgenv().Script_Setting['No_Clip'],
 }):OnChanged(function(v)
     getgenv().Script_Setting['No_Clip'] = v
