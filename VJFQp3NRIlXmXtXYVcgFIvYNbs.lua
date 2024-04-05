@@ -183,7 +183,7 @@ function GetField(Field_S)
 end
 
 function GetTarget(Field) : BasePart
-	return GetField(Field) or GetToken() or GetFlowers(Field) or 
+	return GetField(Field) or GetToken() or GetFlowers(Field)
 end
 
 function Insert_FlowerZones()
