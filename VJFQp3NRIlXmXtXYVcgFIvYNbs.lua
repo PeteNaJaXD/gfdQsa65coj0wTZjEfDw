@@ -227,7 +227,7 @@ local Tabs = {
 }
 
 local Group = {
-	Main_Group = Tabs.General:AddLeftGroupbox('Main')
+	Main_Group = Tabs.General:AddLeftGroupbox('Main'),
 	Setting_Group = Tabs.General:AddRightGroupbox('Setting')
 }
 
