@@ -115,7 +115,8 @@ function Tween(Pos)
 		until (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 >= 80
 		Remove_BC()
 	else
-		if Dis >= 120 or Height <= -7 or Height >= 10 then
+		if Dis >= 120 or Height < -7 or Height > 10 then
+			print(Height)
 			_G.Tween = TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
 			_G.Tween:Play()
 			Create_BC()
@@ -234,9 +235,9 @@ local Group = {
 Group.Main_Group:AddDropdown('Select Field', {
 	Text = 'Select Field',
 	Values = Insert_FlowerZones(),
-	Default = getgenv().Script_Setting['Selected Field']
+	Default = getgenv().Script_Setting['Selected_Field']
 }):OnChanged(function(v)
-    getgenv().Script_Setting['Selected Field'] = v
+    getgenv().Script_Setting['Selected_Field'] = v
 	SaveSetting()
 end) 
 
@@ -247,6 +248,14 @@ Group.Main_Group:AddToggle('Auto Farm Pollen', {
     getgenv().Script_Setting['Auto_Farm'] = v
 	SaveSetting()
 end) 
+
+Group.Setting_Group:AddToggle('No Clip', {
+    Text = 'Safe Mode',
+    Default = getgenv().Script_Setting['No_Clip'],
+}):OnChanged(function(v)
+    getgenv().Script_Setting['No_Clip'] = v
+	SaveSetting()
+end)
 
 Group.Setting_Group:AddToggle('Safe Mode', {
     Text = 'Safe Mode',
@@ -270,16 +279,16 @@ end)
 
 task.spawn(function()
     while true do task.wait()
-		local succes , response = pcall(function()
-			if getgenv().Script_Setting['Auto_Farm'] and getgenv().Script_Setting['Selected Field'] then 
-				NoClip(true)
+		local status , response = pcall(function()
+			if getgenv().Script_Setting['Auto_Farm'] and getgenv().Script_Setting['Selected_Field'] then 
 				if Check_Capacity() < 100 then
-					local target : BasePart = GetTarget(getgenv().Script_Setting['Selected Field'])
+					local CurrentField = getgenv().Script_Setting['Selected_Field']
+					local target : BasePart = GetTarget(CurrentField)
 					repeat task.wait()
 						Tween(target.Position)
 						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
-					until not getgenv().Script_Setting['Auto_Farm'] or Magnitude(target.Position) <= 5 or not target.Parent or not target or Check_Capacity() >= 100
+					until not getgenv().Script_Setting['Auto_Farm'] or Magnitude(target.Position) <= 5 or not target.Parent or not target or Check_Capacity() >= 100 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
 					if not getgenv().Script_Setting['Auto_Farm'] then Remove_BC();_G.Tween:Cancel() end
 				else
 					repeat task.wait() 
@@ -294,8 +303,17 @@ task.spawn(function()
 				end
 			end
 		end)
-		if not succes then warn(response) end
+		if not status then warn(response) end
     end
+end)
+
+task.spawn(function()
+	while true do task.wait() 
+		local status , response = pcall(function()
+			NoClip(getgenv().Script_Setting['No_Clip'])
+		end)
+		if not status then warn(response) end
+	end
 end)
 
 print('Anti-AFK Activated Enjoy :)')
