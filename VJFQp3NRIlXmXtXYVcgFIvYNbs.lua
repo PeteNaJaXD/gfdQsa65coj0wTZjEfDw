@@ -268,7 +268,7 @@ task.spawn(function()
 				if Check_Capacity() < 100 then
 					local target : BasePart = GetTarget(getgenv().Script_Setting['Selected Field'])
 					repeat task.wait()
-						Tween(target.Position + Vector3.new(0,2,0))
+						Tween(target.Position)
 						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
 					until not getgenv().Script_Setting['Auto_Farm'] or Magnitude(target.Position) <= 5 or not target.Parent or not target or Check_Capacity() >= 100
