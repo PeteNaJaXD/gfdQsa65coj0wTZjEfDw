@@ -34,12 +34,8 @@ local Fake_Encode = HttpService:JSONEncode({})
 getgenv().Script_Setting = {}
 
 function CreateFile()
---[[ 	local PlaceID : number = game.PlaceId
-    local Player : string = game.Players.LocalPlayer.Name
-	local Folder_Name =  'CFrame Hub'
-	local Sub_Folder = `{Folder_Name}/{PlaceID}`
-    local File_Name = `{Sub_Folder}/{Player}.json` *]]
 	print(File_Name)
+
 	if not isfolder(Folder_Name) then makefolder(Folder_Name) end
 	if not isfolder(Sub_Folder) then makefolder(Sub_Folder) end
 	if not isfile(File_Name) then writefile(File_Name, Fake_Encode) end
@@ -48,20 +44,15 @@ end
 function SaveSetting()
 	local Encode = HttpService:JSONEncode(getgenv().Script_Setting)
     print(Encode)
+
 	if not isfile(File_Name) then writefile(File_Name, Encode) end
 	writefile(File_Name, Encode)
 end
 
 function LoadSetting()
---[[ 	local PlaceID : number = game.PlaceId
-    local Player : string = game.Players.LocalPlayer.Name
-	local Folder_Name =  'CFrame Hub'
-	local Sub_Folder = `{Folder_Name}/{PlaceID}`
-    local File_Name = `{Sub_Folder}/{Player}.json`
-
-	local HttpService = game:GetService('HttpService') *]]
 	local Decode = HttpService:JSONDecode(readfile(File_Name))
 	print(Decode)
+
 	if isfile(File_Name) then
 		getgenv().Script_Setting = Decode
 	end
@@ -125,7 +116,6 @@ function Tween(Pos)
 		Remove_BC()
 	else
 		if Dis >= 120 or Height <= -7 or Height >= 10 then
-			print(Height)
 			_G.Tween = TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
 			_G.Tween:Play()
 			Create_BC()
@@ -184,8 +174,16 @@ function GetToken() : BasePart
 	end
 end
 
+function GetField(Field_S)
+	local Field = game:GetService("Workspace").FlowerZones:FindFirstChild(Field_S)
+	if Magnitude(Field.Position) >= 120 then
+		return Field
+	end
+	return nil
+end
+
 function GetTarget(Field) : BasePart
-	return GetToken() or GetFlowers(Field) or game:GetService("Workspace").FlowerZones:FindFirstChild(Field)
+	return GetField(Field) or GetToken() or GetFlowers(Field) or 
 end
 
 function Insert_FlowerZones()
@@ -230,6 +228,7 @@ local Tabs = {
 
 local Group = {
 	Main_Group = Tabs.General:AddLeftGroupbox('Main')
+	Setting_Group = Tabs.General:AddRightGroupbox('Setting')
 }
 
 Group.Main_Group:AddDropdown('Select Field', {
@@ -241,12 +240,23 @@ Group.Main_Group:AddDropdown('Select Field', {
 	SaveSetting()
 end) 
 
-
 Group.Main_Group:AddToggle('Auto Farm Pollen', {
     Text = 'Auto Farm Pollen',
     Default = getgenv().Script_Setting['Auto_Farm'],
 }):OnChanged(function(v)
     getgenv().Script_Setting['Auto_Farm'] = v
+	SaveSetting()
+end) 
+
+Group.Setting_Group:AddSlider('Walk Speed', {
+    Text = 'Walk Speed',
+    Default = getgenv().Script_Setting['Walk_Speed'] or 70,
+    Min = 0,
+    Max = 100,
+    Rounding = 0,
+    Compact = false,
+}):OnChanged(function(v)
+    getgenv().Script_Setting['Walk_Speed'] = v
 	SaveSetting()
 end) 
 
@@ -258,8 +268,8 @@ task.spawn(function()
 				if Check_Capacity() < 100 then
 					local target : BasePart = GetTarget(getgenv().Script_Setting['Selected Field'])
 					repeat task.wait()
-						Tween(target.Position)
-						Character().Humanoid.WalkSpeed = 70
+						Tween(target.Position + Vector3.new(0,2,0))
+						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
 					until not getgenv().Script_Setting['Auto_Farm'] or Magnitude(target.Position) <= 5 or not target.Parent or not target or Check_Capacity() >= 100
 					if not getgenv().Script_Setting['Auto_Farm'] then Remove_BC();_G.Tween:Cancel() end
