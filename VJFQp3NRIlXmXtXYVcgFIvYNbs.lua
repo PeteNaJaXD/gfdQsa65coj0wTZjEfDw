@@ -110,7 +110,7 @@ function Tween(Pos)
 	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
 	if getgenv().Script_Setting['Safe_Mode'] and (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 <= 50 then
 		repeat task.wait()                            
-			_G.Tween = TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos*CFrame.new(0,80,0)}):Play()
+			_G.Tween = TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos*CFrame.new(0,80,0)})
 			_G.Tween:Play()
 			Create_BC()
 		until (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 >= 80 or not getgenv().Script_Setting['Safe_Mode']
@@ -119,8 +119,8 @@ function Tween(Pos)
 	else
 		if Height < -8 or Height > 10 then
 			print(Height)
-			_G.Tween = TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
-			
+			_G.Tween = TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos * CFrame.new(0,3,0)})
+			_G.Tween:Play()
 			Create_BC()
 		else
 			Remove_BC()
