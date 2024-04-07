@@ -12,7 +12,7 @@ while true do task.wait()
 	if not TickPerSec then TickPerSec = tick() end
     if not TickPerHour then TickPerHour = tick() end
 	if not Data['PollenPerSec'] then Data['PollenPerSec'] = Pollen end
-    if not Data['PollenPerHour'] then Data['PollenPerHour'] = Pollen end
+    if not Data['PollenPerHour'] then Data['PollenPerHour'] = 0 end
 
     if tick() - TickPerSec >= 1 then
         Data['PollenPerSec'] = math.floor(Pollen - Data['PollenPerSec'])
@@ -20,6 +20,7 @@ while true do task.wait()
     end
     
     if tick() - TickPerHour >= 3600 then 
+        if Data['PollenPerHour'] == 0 then Data['PollenPerHour'] = Pollen end
         Data['PollenPerHour'] = math.floor(Pollen - Data['PollenPerHour'])
         TickPerHour = tick()
     end
