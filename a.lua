@@ -44,7 +44,7 @@ while true do task.wait()
         }
     }
     request({
-        Url = hook,
+        Url = Url,
         Body = game:GetService("HttpService"):JSONEncode(data),
         Method = "POST",
         Headers = {
