@@ -109,21 +109,30 @@ function Tween(Pos)
 	local TService = game:GetService("TweenService")
 	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
 	if getgenv().Script_Setting['Safe_Mode'] and (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 <= 50 then
-		repeat task.wait()
-			TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos*CFrame.new(0,80,0)}):Play()
+		repeat task.wait()                            
+			_G.Tween = TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos*CFrame.new(0,80,0)}):Play()
+			_G.Tween:Play()
 			Create_BC()
-		until (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 >= 80
+		until (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 >= 80 or not getgenv().Script_Setting['Safe_Mode']
+		_G.Tween:Cancel()
 		Remove_BC()
 	else
-		if Dis >= 120 or Height < -7 or Height > 10 then
+		if Height < -8 or Height > 10 then
 			print(Height)
 			_G.Tween = TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
-			_G.Tween:Play()
+			
 			Create_BC()
 		else
 			Remove_BC()
 			WalkTo(Pos)
 		end
+	end
+end
+
+function StopTween(Statement)
+	if not Statement and _G.Tween then 
+		Remove_BC()
+		_G.Tween:Cancel()
 	end
 end
 
@@ -177,7 +186,8 @@ end
 
 function GetField(Field_S)
 	local Field = game:GetService("Workspace").FlowerZones:FindFirstChild(Field_S)
-	if Magnitude(Field.Position) >= 120 then
+	local Height = HumanoidRootPart().Position.Y - Field.Position.Y 
+	if Magnitude(Field.Position) >= 120 or Height < -8 or Height > 8  then
 		return Field
 	end
 	return nil
@@ -288,8 +298,8 @@ task.spawn(function()
 						Tween(target.Position)
 						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
-					until not getgenv().Script_Setting['Auto_Farm'] or Magnitude(target.Position) <= 5 or not target.Parent or not target or Check_Capacity() >= 100 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
-					if not getgenv().Script_Setting['Auto_Farm'] then Remove_BC();_G.Tween:Cancel() end
+					until not getgenv().Script_Setting['Auto_Farm'] or Magnitude(target.Position) <= 7 or not target.Parent or not target or Check_Capacity() >= 100 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
+					StopTween(getgenv().Script_Setting['Auto_Farm'])
 				else
 					repeat task.wait() 
 						Tween(LocalPlayer().SpawnPos.Value.Position) 
@@ -298,7 +308,7 @@ task.spawn(function()
 							task.wait(.25)
 						end
 					until Check_Capacity() <= 0 or not getgenv().Script_Setting['Auto_Farm']
-					if not getgenv().Script_Setting['Auto_Farm'] then Remove_BC();_G.Tween:Cancel() end
+					StopTween(getgenv().Script_Setting['Auto_Farm'])
 					task.wait(6)
 				end
 			end
@@ -310,7 +320,7 @@ end)
 task.spawn(function()
 	while true do task.wait() 
 		local status , response = pcall(function()
-			NoClip(getgenv().Script_Setting['No_Clip'])
+			NoClip(getgenv().Script_Setting['No_Clip'] or getgenv().Script_Setting['Auto_Farm'])
 		end)
 		if not status then warn(response) end
 	end
