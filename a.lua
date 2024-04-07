@@ -30,7 +30,7 @@ while true do task.wait()
                 ["fields"] = {
                     {
                         ["name"] = "Pollen Per Sec:",
-                        ["value"] = tostring(Data['PollenPerHour']),
+                        ["value"] = tostring(Data['PollenPerSec']),
                         ["inline"] =  false
                     },
                     {
