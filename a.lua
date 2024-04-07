@@ -38,7 +38,9 @@ while true do task.wait()
             Url = hook,
             Body = game:GetService("HttpService"):JSONEncode(data),
             Method = "POST",
-            Headers = ["content-Type"] = "application/json"
+            Headers = {
+                ["content-Type"] = "application/json"
+            }
         })
         return
     end
