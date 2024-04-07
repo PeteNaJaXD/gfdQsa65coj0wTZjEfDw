@@ -11,7 +11,7 @@ while true do task.wait()
 	local Pollen = CoreStats.Pollen.Value
 	if not TickPerSec then TickPerSec = tick() end
 	if not Data['PollenPerSec'] then Data['PollenPerSec'] = Pollen end
-
+    if not Data['HoneyPerSec'] then Data['HoneyPerSec'] = Honey end
     if tick() - TickPerSec >= 1 then
         Data['PollenPerSec'] = math.floor(Pollen - Data['PollenPerSec'])
         Data['HoneyPerSec'] = math.floor(Honey - Data['HoneyPerSec'])
