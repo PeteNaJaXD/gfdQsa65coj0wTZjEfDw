@@ -239,6 +239,12 @@ function GetFlowers()
 	return DetectParts[math.random(1, #DetectParts)]
 end
 
+function GetRotate(part)
+	if part.Parent == game.Workspace.Collectibles then
+    	return (part.Rotation.X > 0 and part.Rotation.X < 180) or (part.Rotation.Z > 0 and part.Rotation.Z < 180)
+	end
+end
+
 function GetToken() : BasePart
 	--[[ for _, v : BasePart in pairs(FindDetectPart(1, game.Workspace.Collectibles)) do
 		if v.Parent ~= nil and v.Transparency < 1 and v.Parent and v then
@@ -353,10 +359,11 @@ task.spawn(function()
 						Tween(PosToCFrame(target.Position) * CFrame.new(0, 3, 0), true)
 						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
-					until not getgenv().Script_Setting['Auto_Farm'] or Check_Capacity() >= 100 or target.Parent == nil or target.Transparency >= 1 or Magnitude(target.Position) <= 8 or not target.Parent or not target or CurrentField ~= getgenv().Script_Setting['Selected_Field']
+					until not getgenv().Script_Setting['Auto_Farm'] or Check_Capacity() >= 100 or GetRotate(target) or Magnitude(target.Position) <= 8 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
 					StopTween(getgenv().Script_Setting['Auto_Farm'])
 				--[[ print(IsPlayerInField(), Check_Capacity())
-				if IsPlayerInField() and Check_Capacity() >= 95 then *]]
+				if IsPlayerInField() and Check_Capacity() >= 95 then 
+					 or target.Parent == nil or target.Transparency >= 1  or not target.Parent or not target or*]]
 				else
 					repeat wait() 
 						Tween(LocalPlayer().SpawnPos.Value.Position, false) 
