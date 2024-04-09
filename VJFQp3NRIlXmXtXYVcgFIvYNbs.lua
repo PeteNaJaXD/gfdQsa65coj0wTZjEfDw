@@ -30,8 +30,6 @@ end
 
 function SaveSetting()
 	local Encode = HttpService:JSONEncode(getgenv().Script_Setting)
-    print(Encode)
-
 	if not isfile(File_Name) then writefile(File_Name, Encode) end
 	writefile(File_Name, Encode)
 end
@@ -73,7 +71,6 @@ function WalkTo(pos : Vector3)
 	Character().Humanoid:MoveTo(new_pos)
 end
 
-
 function Create_BC()
 	if not HumanoidRootPart():FindFirstChild("BC") then
 		local Noclip : BodyVelocity = Instance.new("BodyVelocity",HumanoidRootPart())
@@ -88,7 +85,6 @@ function Remove_BC()
 		HumanoidRootPart():FindFirstChild("BC"):Destroy()
 	end
 end
-
 
 function CFrameToPos(pos)
 	local convertion = {
@@ -117,8 +113,10 @@ end
 function IsPlayerInField() : BasePart
 	local Field = game:GetService("Workspace").FlowerZones:FindFirstChild(getgenv().Script_Setting['Selected_Field'])
     local overlap : OverlapParams = OverlapParams.new()
+
 	overlap.FilterDescendantsInstances = {game.Players.LocalPlayer.Character}
 	overlap.FilterType = Enum.RaycastFilterType.Include
+
 	local DetectPart = game:GetService("Workspace"):GetPartsInPart(Field['Part To Detect'], overlap)
 	return #DetectPart > 0
 end
