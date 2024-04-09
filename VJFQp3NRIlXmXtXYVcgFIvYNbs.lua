@@ -205,7 +205,7 @@ function FindDetectPart(MaxPart: number?, Filter : Instance?) : BasePart
 	overlap.FilterType = Enum.RaycastFilterType.Include
 
 	if not Part_To_Detect then
-		Part_To_Detect : Instance = Instance.new('Part')
+		Part_To_Detect = Instance.new('Part')
 	end
 
     Part_To_Detect.Anchored = true
@@ -351,16 +351,16 @@ task.spawn(function()
 					until not getgenv().Script_Setting['Auto_Farm'] or target.Parent == nil or target.Transparency >= 1 or Magnitude(target.Position) <= 7 or not target.Parent or not target or Check_Capacity() >= 100 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
 					StopTween(getgenv().Script_Setting['Auto_Farm'])
 				else
-					repeat task.wait() 
+					repeat wait() 
 						Tween(LocalPlayer().SpawnPos.Value.Position, false) 
-						if Magnitude(LocalPlayer().SpawnPos.Value.Position) <= 15 and LocalPlayer().PlayerGui.ScreenGui.ActivateButton.TextBox.Text == 'Make Honey' then
+						if Magnitude(LocalPlayer().SpawnPos.Value.Position) <= 15 and GetKeyTag() and LocalPlayer().PlayerGui.ScreenGui.ActivateButton.TextBox.Text == 'Make Honey' then
 							--game:GetService("ReplicatedStorage").Events.PlayerHiveCommand:FireServer("ToggleHoneyMaking")
 							SendKeyEvent('E')
 							task.wait(.75)
 						end
 					until Check_Capacity() <= 0 or not getgenv().Script_Setting['Auto_Farm'] or not GetKeyTag()
 					StopTween(getgenv().Script_Setting['Auto_Farm'])
-					task.wait(Get_Maximum_Cells()/Get_Maximum_Bees()+5)
+                    task.wait(Get_Maximum_Bees()/Get_Maximum_Bees()+3)
 				end
 			end
 		end)
