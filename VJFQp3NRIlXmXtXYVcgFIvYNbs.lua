@@ -149,10 +149,10 @@ function Get_Maximum_Cells()
 	end
 	return #Cells
 end
-
-function Part_To_Detect()
-	if not getgenv().Part_To_Detect then
-		getgenv().Part_To_Detect = Instance.new('Part')
+local Part_To_Detect
+function Part_To_Detect_F()
+	if not Part_To_Detect then
+		Part_To_Detect = Instance.new('Part')
 	end
 	local Field = game:GetService("Workspace").FlowerZones:FindFirstChild(getgenv().Script_Setting['Selected_Field'])
 
@@ -168,7 +168,7 @@ function Part_To_Detect()
 end
 
 function IsPlayerInField() : BasePart
-	Part_To_Detect()
+	Part_To_Detect_F()
 
     local overlap : OverlapParams = OverlapParams.new()
 	overlap.FilterDescendantsInstances = {game.Players.LocalPlayer.Character}
@@ -220,7 +220,7 @@ end
 function FindDetectPart(MaxPart: number?, Filter : Instance?) : BasePart
 	MaxPart = MaxPart or math.huge
 
-	Part_To_Detect()
+	Part_To_Detect_F()
 
     local overlap : OverlapParams = OverlapParams.new()
 	
