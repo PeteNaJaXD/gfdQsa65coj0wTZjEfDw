@@ -359,7 +359,8 @@ task.spawn(function()
 						Tween(PosToCFrame(target.Position) * CFrame.new(0, 3, 0), true)
 						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
-					until not getgenv().Script_Setting['Auto_Farm'] or Check_Capacity() >= 100 or GetRotate(target) or Magnitude(target.Position) <= 8 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
+						print(GetRotate(target))
+					until not getgenv().Script_Setting['Auto_Farm'] or Check_Capacity() >= 100 or GetRotate(target) or Magnitude(target.Position) <= 10 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
 					StopTween(getgenv().Script_Setting['Auto_Farm'])
 				--[[ print(IsPlayerInField(), Check_Capacity())
 				if IsPlayerInField() and Check_Capacity() >= 95 then 
