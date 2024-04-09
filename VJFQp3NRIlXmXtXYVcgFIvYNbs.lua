@@ -251,7 +251,7 @@ function GetToken() : BasePart
 			return v
 		end
 	end *]]
-	return FindDetectPart(1, game.Workspace.Collectibles)
+	return FindDetectPart(1, game.Workspace.Collectibles)[1]
 end
 
 function GetTarget() : BasePart
