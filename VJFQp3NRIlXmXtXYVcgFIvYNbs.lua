@@ -57,7 +57,7 @@ function LoadSetting()
 			getgenv().Script_Setting = Decode
 		end
 	end
-	
+
 	if not succes then 
 		warn(err)
 		getgenv().Script_Setting = {}
@@ -102,7 +102,7 @@ function Remove_BC()
 	end
 end
 
-function Tween(Pos)
+function Tween(Pos,CanWalk)
 	local Features = {}
 	local Speed : number;
 	local Dis : number = Magnitude(Pos)
@@ -123,14 +123,14 @@ function Tween(Pos)
 		_G.Tween:Cancel()
 		Remove_BC()
 	else
-		if Height < -8 or Height > 10 then
+		if CanWalk and Height > -8 or CanWalk and Height < 10 then
+			Remove_BC()
+			WalkTo(Pos)
+		else
 			print(Height)
 			_G.Tween = TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos * CFrame.new(0,3,0)})
 			_G.Tween:Play()
 			Create_BC()
-		else
-			Remove_BC()
-			WalkTo(Pos)
 		end
 	end
 end
@@ -315,14 +315,14 @@ task.spawn(function()
 					local CurrentField = getgenv().Script_Setting['Selected_Field']
 					local target : BasePart = GetTarget(CurrentField)
 					repeat task.wait()
-						Tween(target.Position)
+						Tween(target.Position, true)
 						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
 					until not getgenv().Script_Setting['Auto_Farm'] or Magnitude(target.Position) <= 7 or not target.Parent or not target or Check_Capacity() >= 100 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
 					StopTween(getgenv().Script_Setting['Auto_Farm'])
 				else
 					repeat task.wait() 
-						Tween(LocalPlayer().SpawnPos.Value.Position) 
+						Tween(LocalPlayer().SpawnPos.Value.Position, false) 
 						if Magnitude(LocalPlayer().SpawnPos.Value.Position) <= 10 and LocalPlayer().PlayerGui.ScreenGui.ActivateButton.TextBox.Text == 'Make Honey' then
 							game:GetService("ReplicatedStorage").Events.PlayerHiveCommand:FireServer("ToggleHoneyMaking")
 							task.wait(.25)
