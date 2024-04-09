@@ -212,10 +212,11 @@ function FindDetectPart(MaxPart: number?, Filter : Instance?) : BasePart
     Part_To_Detect.Position = Field.Position
 	Part_To_Detect.Size = Field.Size + Vector3.new(0,18,0)
     Part_To_Detect.BrickColor = BrickColor.new("Bright green")
-    Part_To_Detect.Parent = Workspace
+    Part_To_Detect.Parent = Field
 	Part_To_Detect.CanCollide = false
 	Part_To_Detect.Transparency = 0.5
 	Part_To_Detect.CastShadow = false
+	Part_To_Detect.Name = 'Part To Detect'
 	
 	local DetectPart = game:GetService("Workspace"):GetPartsInPart(Part_To_Detect, overlap)
 	return DetectPart
@@ -345,7 +346,7 @@ task.spawn(function()
 					local CurrentField = getgenv().Script_Setting['Selected_Field']
 					local target : BasePart = GetTarget(CurrentField)
 					repeat task.wait()
-						Tween(target.CFrame * CFrame.new(0,5,0), true)
+						Tween(target.CFrame, true)
 						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
 					until not getgenv().Script_Setting['Auto_Farm'] or target.Parent == nil or target.Transparency >= 1 or Magnitude(target.Position) <= 7 or not target.Parent or not target or Check_Capacity() >= 100 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
