@@ -176,19 +176,21 @@ function FindDetectPart(MaxPart: number?, Filter : Instance?) : BasePart
 	return DetectPart
 end
 
+local Flowershash = {}
 function GetFlowers(Field : string)
-	local Flowershash = {}
+	
     local CurrentZone : BasePart = game:GetService("Workspace").FlowerZones:FindFirstChild(Field) 
 	local ZoneID : number = CurrentZone.ID.Value
 	local FP_ID : string = 'FP'..tostring(ZoneID)
     local DetectParts = FindDetectPart(30, game.Workspace.Flowers)
 
-   -- if #Flowershash >= #DetectParts then Flowershash = {} end
-
+   	if #Flowershash >= #DetectParts then Flowershash = {} end
+	
 	for _, v : BasePart in pairs(DetectParts) do
 		local FP = string.split(v.Name,'-')
 		if not Flowershash[v] and Magnitude(v.Position) > 20 and FP[1] == FP_ID then
 			Flowershash[v] = true
+			print(#Flowershash)
 			return v
 		end
 	end
