@@ -35,7 +35,6 @@ getgenv().Script_Setting = {}
 
 function CreateFile()
 	print(File_Name)
-
 	if not isfolder(Folder_Name) then makefolder(Folder_Name) end
 	if not isfolder(Sub_Folder) then makefolder(Sub_Folder) end
 	if not isfile(File_Name) then writefile(File_Name, Fake_Encode) end
@@ -50,11 +49,18 @@ function SaveSetting()
 end
 
 function LoadSetting()
-	local Decode = HttpService:JSONDecode(readfile(File_Name))
-	print(Decode)
+	local succes, err = pcall(function()
+		local Decode = HttpService:JSONDecode(readfile(File_Name))
+		print(Decode)
 
-	if isfile(File_Name) then
-		getgenv().Script_Setting = Decode
+		if isfile(File_Name) then
+			getgenv().Script_Setting = Decode
+		end
+	end
+	
+	if not succes then 
+		warn(err)
+		getgenv().Script_Setting = {}
 	end
 end
 
@@ -144,40 +150,45 @@ function NoClip(Statement : boolean)
 	end
 	
 end
-
-function FindDetectPart(size : number?, MaxPart: number?, Filter : Instance?) : BasePart
-	size = size or 50
+local Part_To_Detect
+function FindDetectPart(MaxPart: number?, Filter : Instance?) : BasePart
 	MaxPart = MaxPart or math.huge
-	local Pos : CFrame = HumanoidRootPart().CFrame
-	local detect_size : Vector3 = Vector3.new(size, 5, size)
-    local overlap : OverlapParams = OverlapParams.new()
 
+	local Field = game:GetService("Workspace").FlowerZones:FindFirstChild(getgenv().Script_Setting['Selected_Field'])
+    local overlap : OverlapParams = OverlapParams.new()
+	
 	overlap.MaxParts = MaxPart
 	overlap.FilterDescendantsInstances = {Filter}
 	overlap.FilterType = Enum.RaycastFilterType.Include
 
-	local Part_To_Detect = Instance.new('Part')
+	if not Part_To_Detect then
+		Part_To_Detect = Instance.new('Part')
+	end
+
     Part_To_Detect.Anchored = true
-    Part_To_Detect.Position = game:GetService("Workspace").FlowerZones:FindFirstChild(getgenv().Script_Setting['Selected_Field']).Position
-	Part_To_Detect.Size = game:GetService("Workspace").FlowerZones:FindFirstChild(getgenv().Script_Setting['Selected_Field']).Size + Vector3.new(0,10,0)
+    Part_To_Detect.Position = Field.Position
+	Part_To_Detect.Size = Field.Size + Vector3.new(0,10,0)
     Part_To_Detect.BrickColor = BrickColor.new("Bright green")
     Part_To_Detect.Parent = Workspace
 	Part_To_Detect.Transparency = 0.5
 	
 	local DetectPart = game:GetService("Workspace"):GetPartsInPart(Part_To_Detect, overlap)
-    --local DetectPart : BasePart = game:GetService("Workspace"):GetPartBoundsInBox(Pos, detect_size, overlap)
 	return DetectPart
 end
 
+local Flowershash = {}
 function GetFlowers(Field : string)
-	local hash : Array<BasePart> = {}
-	local CurrentZone : BasePart = game:GetService("Workspace").FlowerZones:FindFirstChild(Field) 
+    local CurrentZone : BasePart = game:GetService("Workspace").FlowerZones:FindFirstChild(Field) 
 	local ZoneID : number = CurrentZone.ID.Value
 	local FP_ID : string = 'FP'..tostring(ZoneID)
-	for _, v : BasePart in pairs(FindDetectPart(70, 30, game.Workspace.Flowers)) do
+    local DetectParts = FindDetectPart(30, game.Workspace.Flowers)
+
+    if #Flowershash >= #DetectParts then Flowershash = {} end
+
+	for _, v : BasePart in pairs(DetectParts) do
 		local FP = string.split(v.Name,'-')
-		if not hash[v] and Magnitude(v.Position) > math.random(20, 50) and FP[1] == FP_ID then
-			hash[v] = true
+		if not Flowershash[v] and Magnitude(v.Position) > 20 and FP[1] == FP_ID then
+			Flowershash[v] = true
 			return v
 		end
 	end
@@ -185,7 +196,7 @@ end
 
 function GetToken() : BasePart
 	local hash : Array<BasePart> = {}
-	for _, v : BasePart in pairs(FindDetectPart(70, 30, game.Workspace.Collectibles)) do
+	for _, v : BasePart in pairs(FindDetectPart(30, game.Workspace.Collectibles)) do
 		if not hash[v] then
 			hash[v] = true
 			return v
