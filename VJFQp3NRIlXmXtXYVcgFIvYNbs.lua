@@ -114,6 +114,15 @@ function PosToCFrame(pos)
 	return convertion[typeof(pos)](pos)
 end
 
+function IsPlayerInField() : BasePart
+	local Field = game:GetService("Workspace").FlowerZones:FindFirstChild(getgenv().Script_Setting['Selected_Field'])
+    local overlap : OverlapParams = OverlapParams.new()
+	overlap.FilterDescendantsInstances = {game.Players.LocalPlayer.Character}
+	overlap.FilterType = Enum.RaycastFilterType.Include
+	local DetectPart = game:GetService("Workspace"):GetPartsInPart(Field['Part To Detect'], overlap)
+	return #DetectPart > 0
+end
+
 function Tween(Pos,CanWalk)
 	local CPos = PosToCFrame(Pos)
 	local PPos = CFrameToPos(Pos)
@@ -135,7 +144,7 @@ function Tween(Pos,CanWalk)
 		_G.Tween:Cancel()
 		Remove_BC()
 	else
-		if CanWalk and Height > -8 and Height < 12 then
+		if CanWalk and IsPlayerInField() then
 			Remove_BC()
 			WalkTo(Pos)
 		else
@@ -346,12 +355,13 @@ task.spawn(function()
 					local CurrentField = getgenv().Script_Setting['Selected_Field']
 					local target : BasePart = GetTarget(CurrentField)
 					repeat task.wait()
+						print(Magnitude(target.Position))
 						Tween(target.CFrame, true)
 						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
 					until not getgenv().Script_Setting['Auto_Farm'] or target.Parent == nil or target.Transparency >= 1 or Magnitude(target.Position) <= 7 or not target.Parent or not target or Check_Capacity() >= 100 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
 					StopTween(getgenv().Script_Setting['Auto_Farm'])
-				else
+				elseif IsPlayerInField() and Check_Capacity() >= 100 then
 					repeat wait() 
 						Tween(LocalPlayer().SpawnPos.Value.Position, false) 
 						if Magnitude(LocalPlayer().SpawnPos.Value.Position) <= 15 and GetKeyTag() and LocalPlayer().PlayerGui.ScreenGui.ActivateButton.TextBox.Text == 'Make Honey' then
