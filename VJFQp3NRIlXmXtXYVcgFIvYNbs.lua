@@ -368,7 +368,7 @@ task.spawn(function()
                     task.wait(Get_Maximum_Bees()/Get_Maximum_Bees()+3)
 				end
 			end
-		end)
+		--end)
 		--if not status then warn(response) end
     end
 end)
