@@ -56,7 +56,7 @@ function LoadSetting()
 		if isfile(File_Name) then
 			getgenv().Script_Setting = Decode
 		end
-	end
+	end)
 
 	if not succes then 
 		warn(err)
@@ -123,7 +123,7 @@ function Tween(Pos,CanWalk)
 		_G.Tween:Cancel()
 		Remove_BC()
 	else
-		if CanWalk and Height > -8 or CanWalk and Height < 10 then
+		if CanWalk and Height > -8  and Height < 10 then
 			Remove_BC()
 			WalkTo(Pos)
 		else
@@ -176,14 +176,14 @@ function FindDetectPart(MaxPart: number?, Filter : Instance?) : BasePart
 	return DetectPart
 end
 
-local Flowershash = {}
 function GetFlowers(Field : string)
+	local Flowershash = {}
     local CurrentZone : BasePart = game:GetService("Workspace").FlowerZones:FindFirstChild(Field) 
 	local ZoneID : number = CurrentZone.ID.Value
 	local FP_ID : string = 'FP'..tostring(ZoneID)
     local DetectParts = FindDetectPart(30, game.Workspace.Flowers)
 
-    if #Flowershash >= #DetectParts then Flowershash = {} end
+   -- if #Flowershash >= #DetectParts then Flowershash = {} end
 
 	for _, v : BasePart in pairs(DetectParts) do
 		local FP = string.split(v.Name,'-')
