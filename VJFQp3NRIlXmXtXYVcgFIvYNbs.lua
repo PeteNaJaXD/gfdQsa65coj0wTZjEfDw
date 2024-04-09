@@ -110,14 +110,71 @@ function PosToCFrame(pos)
 	return convertion[typeof(pos)](pos)
 end
 
-function IsPlayerInField() : BasePart
-	local Field = game:GetService("Workspace").FlowerZones:FindFirstChild(getgenv().Script_Setting['Selected_Field'])
-    local overlap : OverlapParams = OverlapParams.new()
+function NoClip(Statement : boolean)
+	for _,v in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
+		if v:IsA('BasePart') then
+			v.CanCollide = not Statement
+		end
+	end
+	
+end
 
+function SendKeyEvent(Key)
+	game:GetService("VirtualInputManager"):SendKeyEvent(true,Key,false,game)
+	game:GetService("VirtualInputManager"):SendKeyEvent(false,Key,false,game)
+end
+
+function GetKeyTag()
+	return LocalPlayer().PlayerGui.ScreenGui.ActivateButton.KeyTag.Visible
+end
+
+function Get_Maximum_Bees()
+	local Self = LocalPlayer().Honeycomb.Value
+	local bees = {}
+	for i,v in pairs(game.Workspace.Honeycombs[tostring(Self)].Cells:GetChildren()) do
+		if v.CellType.Value ~= 'Empty' then
+			table.insert(bees,v)		
+		end
+	end
+	return #bees
+end
+
+function Get_Maximum_Cells()
+	local Self = LocalPlayer().Honeycomb.Value
+	local Cells = {}
+	for i,v in pairs(game.Workspace.Honeycombs[tostring(Self)].Cells:GetChildren()) do
+		if v:FindFirstChild('Backplate') then
+			table.insert(Cells,v)		
+		end
+	end
+	return #Cells
+end
+
+function Part_To_Detect()
+	if not getgenv().Part_To_Detect then
+		getgenv().Part_To_Detect = Instance.new('Part')
+	end
+	local Field = game:GetService("Workspace").FlowerZones:FindFirstChild(getgenv().Script_Setting['Selected_Field'])
+
+    Part_To_Detect.Anchored = true
+    Part_To_Detect.Position = Field.Position
+	Part_To_Detect.Size = Field.Size + Vector3.new(0,18,0)
+    Part_To_Detect.BrickColor = BrickColor.new("Bright green")
+    Part_To_Detect.Parent = Field
+	Part_To_Detect.CanCollide = false
+	Part_To_Detect.Transparency = 0.5
+	Part_To_Detect.CastShadow = false
+	Part_To_Detect.Name = 'Part To Detect'
+end
+
+function IsPlayerInField() : BasePart
+	Part_To_Detect()
+
+    local overlap : OverlapParams = OverlapParams.new()
 	overlap.FilterDescendantsInstances = {game.Players.LocalPlayer.Character}
 	overlap.FilterType = Enum.RaycastFilterType.Include
 
-	local DetectPart = game:GetService("Workspace"):GetPartsInPart(Field['Part To Detect'], overlap)
+	local DetectPart = game:GetService("Workspace"):GetPartsInPart(Part_To_Detect, overlap)
 	return #DetectPart > 0
 end
 
@@ -160,70 +217,17 @@ function StopTween(Statement)
 	end
 end
 
-function NoClip(Statement : boolean)
-	for _,v in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
-		if v:IsA('BasePart') then
-			v.CanCollide = not Statement
-		end
-	end
-	
-end
-
-function SendKeyEvent(Key)
-	game:GetService("VirtualInputManager"):SendKeyEvent(true,Key,false,game)
-	game:GetService("VirtualInputManager"):SendKeyEvent(false,Key,false,game)
-end
-
-function GetKeyTag()
-	return LocalPlayer().PlayerGui.ScreenGui.ActivateButton.KeyTag.Visible
-end
-
-function Get_Maximum_Bees()
-	local Self = LocalPlayer().Honeycomb.Value
-	local bees = {}
-	for i,v in pairs(game.Workspace.Honeycombs[tostring(Self)].Cells:GetChildren()) do
-		if v.CellType.Value ~= 'Empty' then
-			table.insert(bees,v)		
-		end
-	end
-	return #bees
-end
-
-function Get_Maximum_Cells()
-	local Self = LocalPlayer().Honeycomb.Value
-	local Cells = {}
-	for i,v in pairs(game.Workspace.Honeycombs[tostring(Self)].Cells:GetChildren()) do
-		if v:FindFirstChild('Backplate') then
-			table.insert(Cells,v)		
-		end
-	end
-	return #Cells
-end
-
-local Part_To_Detect
 function FindDetectPart(MaxPart: number?, Filter : Instance?) : BasePart
 	MaxPart = MaxPart or math.huge
 
-	local Field = game:GetService("Workspace").FlowerZones:FindFirstChild(getgenv().Script_Setting['Selected_Field'])
+	Part_To_Detect()
+
     local overlap : OverlapParams = OverlapParams.new()
 	
 	overlap.MaxParts = MaxPart
 	overlap.FilterDescendantsInstances = {Filter}
 	overlap.FilterType = Enum.RaycastFilterType.Include
 
-	if not Part_To_Detect then
-		Part_To_Detect = Instance.new('Part')
-	end
-
-    Part_To_Detect.Anchored = true
-    Part_To_Detect.Position = Field.Position
-	Part_To_Detect.Size = Field.Size + Vector3.new(0,18,0)
-    Part_To_Detect.BrickColor = BrickColor.new("Bright green")
-    Part_To_Detect.Parent = Field
-	Part_To_Detect.CanCollide = false
-	Part_To_Detect.Transparency = 0.5
-	Part_To_Detect.CastShadow = false
-	Part_To_Detect.Name = 'Part To Detect'
 	
 	local DetectPart = game:GetService("Workspace"):GetPartsInPart(Part_To_Detect, overlap)
 	return DetectPart
