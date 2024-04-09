@@ -349,6 +349,15 @@ task.spawn(function()
     while true do task.wait()
 		local status , response = pcall(function()
 			if getgenv().Script_Setting['Auto_Farm'] and getgenv().Script_Setting['Selected_Field'] then 
+				--if Check_Capacity() < 100 then
+				local CurrentField = getgenv().Script_Setting['Selected_Field']
+				local target : BasePart = GetTarget(CurrentField)
+				repeat task.wait()
+					Tween(target.CFrame, true)
+					Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
+					game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
+				until not getgenv().Script_Setting['Auto_Farm'] or not game.Workspace.Collectibles[target] or target.Parent == nil or target.Transparency >= 1 or Magnitude(target.Position) <= 8 or not target.Parent or not target or CurrentField ~= getgenv().Script_Setting['Selected_Field']
+				StopTween(getgenv().Script_Setting['Auto_Farm'])
 				if IsPlayerInField() and Check_Capacity() >= 100 then
 					repeat wait() 
 						Tween(LocalPlayer().SpawnPos.Value.Position, false) 
@@ -360,15 +369,6 @@ task.spawn(function()
 					until Check_Capacity() <= 0 or not getgenv().Script_Setting['Auto_Farm'] or not GetKeyTag()
 					StopTween(getgenv().Script_Setting['Auto_Farm'])
                     task.wait(Get_Maximum_Bees()/Get_Maximum_Bees()+3)
-				else
-					local CurrentField = getgenv().Script_Setting['Selected_Field']
-					local target : BasePart = GetTarget(CurrentField)
-					repeat task.wait()
-						Tween(target.CFrame * CFrame.new(0, 3, 0), true)
-						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
-						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
-					until not getgenv().Script_Setting['Auto_Farm'] or not game.Workspace.Collectibles[target] or target.Parent == nil or target.Transparency >= 1 or Magnitude(target.Position) <= 8 or not target.Parent or not target or Check_Capacity() >= 100 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
-					StopTween(getgenv().Script_Setting['Auto_Farm'])
 				end
 			end
 		end)
