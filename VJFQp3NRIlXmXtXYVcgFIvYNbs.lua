@@ -240,11 +240,12 @@ function GetFlowers()
 end
 
 function GetToken() : BasePart
-	for _, v : BasePart in pairs(FindDetectPart(1, game.Workspace.Collectibles)) do
+	--[[ for _, v : BasePart in pairs(FindDetectPart(1, game.Workspace.Collectibles)) do
 		if v.Parent ~= nil and v.Transparency < 1 and v.Parent and v then
 			return v
 		end
-	end
+	end *]]
+	return FindDetectPart(1, game.Workspace.Collectibles)
 end
 
 function GetTarget() : BasePart
