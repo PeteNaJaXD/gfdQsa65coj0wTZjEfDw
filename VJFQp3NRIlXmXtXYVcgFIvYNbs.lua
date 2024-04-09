@@ -70,7 +70,7 @@ end
 
 function WalkTo(pos : Vector3)
 	local new_pos = CFrameToPos(pos)
-	Character().Humanoid:MoveTo(pos)
+	Character().Humanoid:MoveTo(new_pos)
 end
 
 
@@ -161,6 +161,38 @@ function NoClip(Statement : boolean)
 	end
 	
 end
+
+function SendKeyEvent(Key)
+	game:GetService("VirtualInputManager"):SendKeyEvent(true,Key,false,game)
+	game:GetService("VirtualInputManager"):SendKeyEvent(false,Key,false,game)
+end
+
+function GetKeyTag()
+	return LocalPlayer().PlayerGui.ScreenGui.ActivateButton.KeyTag.Visible
+end
+
+function Get_Maximum_Bees()
+	local Self = LocalPlayer().Honeycomb.Value
+	local bees = {}
+	for i,v in pairs(game.Workspace.Honeycombs[tostring(Self)].Cells:GetChildren()) do
+		if v.CellType.Value ~= 'Empty' then
+			table.insert(bees,v)		
+		end
+	end
+	return #bees
+end
+
+function Get_Maximum_Cells()
+	local Self = LocalPlayer().Honeycomb.Value
+	local Cells = {}
+	for i,v in pairs(game.Workspace.Honeycombs[tostring(Self)].Cells:GetChildren()) do
+		if v:FindFirstChild('Backplate') then
+			table.insert(Cells,v)		
+		end
+	end
+	return #Cells
+end
+
 local Part_To_Detect
 function FindDetectPart(MaxPart: number?, Filter : Instance?) : BasePart
 	MaxPart = MaxPart or math.huge
@@ -173,7 +205,7 @@ function FindDetectPart(MaxPart: number?, Filter : Instance?) : BasePart
 	overlap.FilterType = Enum.RaycastFilterType.Include
 
 	if not Part_To_Detect then
-		Part_To_Detect = Instance.new('Part')
+		Part_To_Detect : Instance = Instance.new('Part')
 	end
 
     Part_To_Detect.Anchored = true
@@ -181,30 +213,17 @@ function FindDetectPart(MaxPart: number?, Filter : Instance?) : BasePart
 	Part_To_Detect.Size = Field.Size + Vector3.new(0,18,0)
     Part_To_Detect.BrickColor = BrickColor.new("Bright green")
     Part_To_Detect.Parent = Workspace
+	Part_To_Detect.CanCollide = false
 	Part_To_Detect.Transparency = 0.5
+	Part_To_Detect.CastShadow = false
 	
 	local DetectPart = game:GetService("Workspace"):GetPartsInPart(Part_To_Detect, overlap)
 	return DetectPart
 end
 
-local Flowershash = {}
 function GetFlowers(Field : string)
-	
-    local CurrentZone : BasePart = game:GetService("Workspace").FlowerZones:FindFirstChild(Field) 
-	local ZoneID : number = CurrentZone.ID.Value
-	local FP_ID : string = 'FP'..tostring(ZoneID)
     local DetectParts = FindDetectPart(math.huge, game.Workspace.Flowers)
 	return DetectParts[math.random(1, #DetectParts)]
-   	--[[ if #Flowershash >= #DetectParts then Flowershash = {} end
-	
-	for _, v : BasePart in pairs(DetectParts) do
-		local FP = string.split(v.Name,'-')
-		if not Flowershash[v] and Magnitude(v.Position) > 20 and FP[1] == FP_ID then
-			Flowershash[v] = true
-			print(#Flowershash)
-			return v
-		end
-	end *]]
 end
 
 function GetToken() : BasePart
@@ -326,7 +345,6 @@ task.spawn(function()
 					local CurrentField = getgenv().Script_Setting['Selected_Field']
 					local target : BasePart = GetTarget(CurrentField)
 					repeat task.wait()
-						print(Magnitude(target.Position))
 						Tween(target.CFrame * CFrame.new(0,5,0), true)
 						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
@@ -335,13 +353,14 @@ task.spawn(function()
 				else
 					repeat task.wait() 
 						Tween(LocalPlayer().SpawnPos.Value.Position, false) 
-						if Magnitude(LocalPlayer().SpawnPos.Value.Position) <= 10 and LocalPlayer().PlayerGui.ScreenGui.ActivateButton.TextBox.Text == 'Make Honey' then
-							game:GetService("ReplicatedStorage").Events.PlayerHiveCommand:FireServer("ToggleHoneyMaking")
+						if Magnitude(LocalPlayer().SpawnPos.Value.Position) <= 15 and LocalPlayer().PlayerGui.ScreenGui.ActivateButton.TextBox.Text == 'Make Honey' then
+							--game:GetService("ReplicatedStorage").Events.PlayerHiveCommand:FireServer("ToggleHoneyMaking")
+							SendKeyEvent('E')
 							task.wait(.75)
 						end
-					until Check_Capacity() <= 0 or not getgenv().Script_Setting['Auto_Farm']
+					until Check_Capacity() <= 0 or not getgenv().Script_Setting['Auto_Farm'] or not GetKeyTag()
 					StopTween(getgenv().Script_Setting['Auto_Farm'])
-					task.wait(6)
+					task.wait(Get_Maximum_Cells()/Get_Maximum_Bees()+5)
 				end
 			end
 		end)
