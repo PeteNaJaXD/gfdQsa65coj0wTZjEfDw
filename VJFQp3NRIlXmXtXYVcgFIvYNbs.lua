@@ -240,7 +240,7 @@ function GetFlowers()
 end
 
 function GetToken() : BasePart
-	for _, v : BasePart in pairs(FindDetectPart(math.huge, game.Workspace.Collectibles)) do
+	for _, v : BasePart in pairs(FindDetectPart(1, game.Workspace.Collectibles)) do
 		if v.Parent ~= nil and v.Transparency < 1 and v.Parent and v then
 			return v
 		end
@@ -343,14 +343,14 @@ end)
 
 task.spawn(function()
     while true do task.wait()
-		--local status , response = pcall(function()
+		local status , response = pcall(function()
 			if getgenv().Script_Setting['Auto_Farm'] and getgenv().Script_Setting['Selected_Field'] then 
 				if Check_Capacity() < 100 then
 					local CurrentField = getgenv().Script_Setting['Selected_Field']
 					local target : BasePart = GetTarget()
 					repeat task.wait()
-						
-						Tween(target.CFrame * CFrame.new(0, 3, 0), true)
+
+						Tween(PosToCFrame(target.Position) * CFrame.new(0, 3, 0), true)
 						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
 						
@@ -370,8 +370,8 @@ task.spawn(function()
                     task.wait(Get_Maximum_Bees()/Get_Maximum_Bees()+3)
 				end
 			end
-		--end)
-		--if not status then warn(response) end
+		end)
+		if not status then warn(response) end
     end
 end)
 
