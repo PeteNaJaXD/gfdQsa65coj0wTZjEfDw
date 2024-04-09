@@ -149,6 +149,7 @@ function Get_Maximum_Cells()
 	end
 	return #Cells
 end
+
 local Part_To_Detect
 function Part_To_Detect_F()
 	if not Part_To_Detect then
@@ -360,9 +361,10 @@ task.spawn(function()
 					Tween(target.CFrame, true)
 					Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 					game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
-				until not getgenv().Script_Setting['Auto_Farm'] or not game.Workspace.Collectibles[target] or target.Parent == nil or target.Transparency >= 1 or Magnitude(target.Position) <= 8 or not target.Parent or not target or CurrentField ~= getgenv().Script_Setting['Selected_Field']
+				until not getgenv().Script_Setting['Auto_Farm'] or target.Parent == nil or target.Transparency >= 1 or Magnitude(target.Position) <= 8 or not target.Parent or not target or CurrentField ~= getgenv().Script_Setting['Selected_Field']
 				StopTween(getgenv().Script_Setting['Auto_Farm'])
-				if IsPlayerInField() and Check_Capacity() >= 100 then
+				print(IsPlayerInField(), Check_Capacity())
+				if IsPlayerInField() and Check_Capacity() >= 95 then
 					repeat wait() 
 						Tween(LocalPlayer().SpawnPos.Value.Position, false) 
 						if Magnitude(LocalPlayer().SpawnPos.Value.Position) <= 15 and GetKeyTag() and LocalPlayer().PlayerGui.ScreenGui.ActivateButton.TextBox.Text == 'Make Honey' then
