@@ -233,7 +233,7 @@ function FindDetectPart(MaxPart: number?, Filter : Instance?) : BasePart
 	return DetectPart
 end
 
-function GetFlowers(Field : string)
+function GetFlowers()
     local DetectParts = FindDetectPart(math.huge, game.Workspace.Flowers)
 	return DetectParts[math.random(1, #DetectParts)]
 end
@@ -255,8 +255,8 @@ function GetField(Field_S)
 	return nil
 end
 --GetField(Field) or 
-function GetTarget(Field) : BasePart
-	return GetToken() or GetFlowers(Field)
+function GetTarget() : BasePart
+	return GetToken() or GetFlowers()
 end
 
 function Insert_FlowerZones()
@@ -355,7 +355,7 @@ task.spawn(function()
 			if getgenv().Script_Setting['Auto_Farm'] and getgenv().Script_Setting['Selected_Field'] then 
 				--if Check_Capacity() < 100 then
 				local CurrentField = getgenv().Script_Setting['Selected_Field']
-				local target : BasePart = GetTarget(CurrentField)
+				local target : BasePart = GetTarget()
 				repeat task.wait()
 					Tween(target.CFrame, true)
 					Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
