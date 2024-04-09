@@ -156,7 +156,16 @@ function FindDetectPart(size : number?, MaxPart: number?, Filter : Instance?) : 
 	overlap.FilterDescendantsInstances = {Filter}
 	overlap.FilterType = Enum.RaycastFilterType.Include
 
-    local DetectPart : BasePart = game:GetService("Workspace"):GetPartBoundsInBox(Pos, detect_size, overlap)
+	local Part_To_Detect = Instance.new('Part')
+    Part_To_Detect.Anchored = true
+    Part_To_Detect.Position = game:GetService("Workspace").FlowerZones:FindFirstChild(getgenv().Script_Setting['Selected_Field']).Position
+	Part_To_Detect.Size = game:GetService("Workspace").FlowerZones:FindFirstChild(getgenv().Script_Setting['Selected_Field']).Size + Vector3.new(0,10,0)
+    Part_To_Detect.BrickColor = BrickColor.new("Bright green")
+    Part_To_Detect.Parent = Workspace
+	Part_To_Detect.Transparency = 0.5
+	
+	local DetectPart = game:GetService("Workspace"):GetPartsInPart(Part_To_Detect, overlap)
+    --local DetectPart : BasePart = game:GetService("Workspace"):GetPartBoundsInBox(Pos, detect_size, overlap)
 	return DetectPart
 end
 
