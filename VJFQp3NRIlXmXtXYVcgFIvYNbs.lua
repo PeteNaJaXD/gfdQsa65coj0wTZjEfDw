@@ -11,18 +11,6 @@ repeat task.wait()
 	end)
 until game:GetService("Players").LocalPlayer:FindFirstChild('Honeycomb')
 
-function convertpos(pos)
-	local convertion = {
-		['Vector3'] = function(pos)
-			return pos
-		end,
-		['CFrame'] = function(pos)
-			return pos.Position
-		end,
-	}
-	return convertion[typeof(pos)](pos)
-end
-
 local PlaceID : number = game.PlaceId
 local Player : number = game.Players.LocalPlayer.UserId 
 local Folder_Name =  'CFrame Hub'
@@ -77,11 +65,11 @@ function HumanoidRootPart() : BasePart
 end
 
 function Magnitude(pos : Vector3) : number
-	return (HumanoidRootPart().Position - convertpos(pos)).Magnitude
+	return (HumanoidRootPart().Position - CFrameToPos(pos)).Magnitude
 end
 
 function WalkTo(pos : Vector3)
-	local new_pos = convertpos(pos)
+	local new_pos = CFrameToPos(pos)
 	Character().Humanoid:MoveTo(pos)
 end
 
@@ -95,25 +83,49 @@ function Create_BC()
 	end
 end
 
-
 function Remove_BC()
 	if HumanoidRootPart():FindFirstChild("BC") then
 		HumanoidRootPart():FindFirstChild("BC"):Destroy()
 	end
 end
 
+
+function CFrameToPos(pos)
+	local convertion = {
+		['Vector3'] = function(pos)
+			return pos
+		end,
+		['CFrame'] = function(pos)
+			return pos.Position
+		end,
+	}
+	return convertion[typeof(pos)](pos)
+end
+
+function PosToCFrame(pos)
+	local convertion = {
+		['Vector3'] = function(pos)
+			return CFrame.new(pos)
+		end,
+		['CFrame'] = function(pos)
+			return pos
+		end,
+	}
+	return convertion[typeof(pos)](pos)
+end
+
 function Tween(Pos,CanWalk)
-	local Features = {}
+	local CPos = PosToCFrame(Pos)
+	local PPos = CFrameToPos(Pos)
 	local Speed : number;
-	local Dis : number = Magnitude(Pos)
-	local CPos = CFrame.new(convertpos(Pos))
+	local Dis : number = Magnitude(PPos)
 	if Dis < 1000 then
 		Speed = 300
 	elseif Dis >= 100 then
 		Speed = 200
 	end
 	local TService = game:GetService("TweenService")
-	local Height = HumanoidRootPart().Position.Y - convertpos(Pos).Y 
+	local Height = HumanoidRootPart().Position.Y - PPos.Y 
 	if getgenv().Script_Setting['Safe_Mode'] and (Character().Humanoid.Health / Character().Humanoid.MaxHealth) * 100 <= 50 then
 		repeat task.wait()                            
 			_G.Tween = TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos*CFrame.new(0,80,0)})
@@ -123,12 +135,11 @@ function Tween(Pos,CanWalk)
 		_G.Tween:Cancel()
 		Remove_BC()
 	else
-		if CanWalk and Height > -8  and Height < 10 then
+		if CanWalk and Height > -8 and Height < 12 then
 			Remove_BC()
 			WalkTo(Pos)
 		else
-			print(Height)
-			_G.Tween = TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos * CFrame.new(0,3,0)})
+			_G.Tween = TService:Create(HumanoidRootPart(),TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = CPos})
 			_G.Tween:Play()
 			Create_BC()
 		end
@@ -167,7 +178,7 @@ function FindDetectPart(MaxPart: number?, Filter : Instance?) : BasePart
 
     Part_To_Detect.Anchored = true
     Part_To_Detect.Position = Field.Position
-	Part_To_Detect.Size = Field.Size + Vector3.new(0,10,0)
+	Part_To_Detect.Size = Field.Size + Vector3.new(0,18,0)
     Part_To_Detect.BrickColor = BrickColor.new("Bright green")
     Part_To_Detect.Parent = Workspace
 	Part_To_Detect.Transparency = 0.5
@@ -182,9 +193,9 @@ function GetFlowers(Field : string)
     local CurrentZone : BasePart = game:GetService("Workspace").FlowerZones:FindFirstChild(Field) 
 	local ZoneID : number = CurrentZone.ID.Value
 	local FP_ID : string = 'FP'..tostring(ZoneID)
-    local DetectParts = FindDetectPart(30, game.Workspace.Flowers)
-
-   	if #Flowershash >= #DetectParts then Flowershash = {} end
+    local DetectParts = FindDetectPart(math.huge, game.Workspace.Flowers)
+	return DetectParts[math.random(1, #DetectParts)]
+   	--[[ if #Flowershash >= #DetectParts then Flowershash = {} end
 	
 	for _, v : BasePart in pairs(DetectParts) do
 		local FP = string.split(v.Name,'-')
@@ -193,14 +204,12 @@ function GetFlowers(Field : string)
 			print(#Flowershash)
 			return v
 		end
-	end
+	end *]]
 end
 
 function GetToken() : BasePart
-	local hash : Array<BasePart> = {}
-	for _, v : BasePart in pairs(FindDetectPart(30, game.Workspace.Collectibles)) do
-		if not hash[v] then
-			hash[v] = true
+	for _, v : BasePart in pairs(FindDetectPart(math.huge, game.Workspace.Collectibles)) do
+		if v.Parent ~= nil and v.Transparency < 1 and v.Parent and v then
 			return v
 		end
 	end
@@ -214,9 +223,9 @@ function GetField(Field_S)
 	end
 	return nil
 end
-
+--GetField(Field) or 
 function GetTarget(Field) : BasePart
-	return GetField(Field) or GetToken() or GetFlowers(Field)
+	return GetToken() or GetFlowers(Field)
 end
 
 function Insert_FlowerZones()
@@ -317,17 +326,18 @@ task.spawn(function()
 					local CurrentField = getgenv().Script_Setting['Selected_Field']
 					local target : BasePart = GetTarget(CurrentField)
 					repeat task.wait()
-						Tween(target.Position, true)
+						print(Magnitude(target.Position))
+						Tween(target.CFrame * CFrame.new(0,5,0), true)
 						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
-					until not getgenv().Script_Setting['Auto_Farm'] or Magnitude(target.Position) <= 7 or not target.Parent or not target or Check_Capacity() >= 100 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
+					until not getgenv().Script_Setting['Auto_Farm'] or target.Parent == nil or target.Transparency >= 1 or Magnitude(target.Position) <= 7 or not target.Parent or not target or Check_Capacity() >= 100 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
 					StopTween(getgenv().Script_Setting['Auto_Farm'])
 				else
 					repeat task.wait() 
 						Tween(LocalPlayer().SpawnPos.Value.Position, false) 
 						if Magnitude(LocalPlayer().SpawnPos.Value.Position) <= 10 and LocalPlayer().PlayerGui.ScreenGui.ActivateButton.TextBox.Text == 'Make Honey' then
 							game:GetService("ReplicatedStorage").Events.PlayerHiveCommand:FireServer("ToggleHoneyMaking")
-							task.wait(.25)
+							task.wait(.75)
 						end
 					until Check_Capacity() <= 0 or not getgenv().Script_Setting['Auto_Farm']
 					StopTween(getgenv().Script_Setting['Auto_Farm'])
