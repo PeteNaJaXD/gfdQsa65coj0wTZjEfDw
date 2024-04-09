@@ -247,15 +247,6 @@ function GetToken() : BasePart
 	end
 end
 
-function GetField(Field_S)
-	local Field = game:GetService("Workspace").FlowerZones:FindFirstChild(Field_S)
-	local Height = HumanoidRootPart().Position.Y - Field.Position.Y 
-	if Magnitude(Field.Position) >= 120 or Height < -8 or Height > 8  then
-		return Field
-	end
-	return nil
-end
---GetField(Field) or 
 function GetTarget() : BasePart
 	return GetToken() or GetFlowers()
 end
@@ -352,23 +343,23 @@ end)
 
 task.spawn(function()
     while true do task.wait()
-		local status , response = pcall(function()
+		--local status , response = pcall(function()
 			if getgenv().Script_Setting['Auto_Farm'] and getgenv().Script_Setting['Selected_Field'] then 
-				--if Check_Capacity() < 100 then
-				local CurrentField = getgenv().Script_Setting['Selected_Field']
-				local target : BasePart = GetTarget()
-				repeat task.wait()
-					Tween(target.CFrame, true)
-					Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
-					game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
-				until not getgenv().Script_Setting['Auto_Farm'] or target.Parent == nil or target.Transparency >= 1 or Magnitude(target.Position) <= 8 or not target.Parent or not target or CurrentField ~= getgenv().Script_Setting['Selected_Field']
-				StopTween(getgenv().Script_Setting['Auto_Farm'])
-				print(IsPlayerInField(), Check_Capacity())
-				if IsPlayerInField() and Check_Capacity() >= 95 then
+				if Check_Capacity() < 100 then
+					local CurrentField = getgenv().Script_Setting['Selected_Field']
+					local target : BasePart = GetTarget()
+					repeat task.wait()
+						Tween(target.CFrame * CFrame.new(0, 3, 0), true)
+						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
+						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
+					until not getgenv().Script_Setting['Auto_Farm'] or Check_Capacity() >= 100 or target.Parent == nil or target.Transparency >= 1 or Magnitude(target.Position) <= 8 or not target.Parent or not target or CurrentField ~= getgenv().Script_Setting['Selected_Field']
+					StopTween(getgenv().Script_Setting['Auto_Farm'])
+				--[[ print(IsPlayerInField(), Check_Capacity())
+				if IsPlayerInField() and Check_Capacity() >= 95 then *]]
+				else
 					repeat wait() 
 						Tween(LocalPlayer().SpawnPos.Value.Position, false) 
 						if Magnitude(LocalPlayer().SpawnPos.Value.Position) <= 15 and GetKeyTag() and LocalPlayer().PlayerGui.ScreenGui.ActivateButton.TextBox.Text == 'Make Honey' then
-							--game:GetService("ReplicatedStorage").Events.PlayerHiveCommand:FireServer("ToggleHoneyMaking")
 							SendKeyEvent('E')
 							task.wait(.75)
 						end
@@ -378,7 +369,7 @@ task.spawn(function()
 				end
 			end
 		end)
-		if not status then warn(response) end
+		--if not status then warn(response) end
     end
 end)
 
