@@ -351,7 +351,7 @@ task.spawn(function()
 		local status , response = pcall(function()
 			if getgenv().Script_Setting['Auto_Farm'] and getgenv().Script_Setting['Selected_Field'] then 
 				if Check_Capacity() < 100 then
-					local Tokens = FindDetectPart(math.huge, game.Workspace.Collectibles)
+					local Tokens = FindDetectPart(100, game.Workspace.Collectibles)
 					local Flower = GetFlowers()
 					print(IsPlayerInField() , #Tokens)
 					if IsPlayerInField() and #Tokens > 0 then
@@ -373,7 +373,7 @@ task.spawn(function()
 							Tween(PosToCFrame(Flower.Position) * CFrame.new(0, 3, 0), true)
 							Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 							game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
-						until not getgenv().Script_Setting['Auto_Farm'] or Check_Capacity() >= 100 or Magnitude(v.Position) <= 5 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
+						until not getgenv().Script_Setting['Auto_Farm'] or Check_Capacity() >= 100 or Magnitude(Flower.Position) <= 5 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
 						if not getgenv().Script_Setting['Auto_Farm'] then StopTween() return end
 					end
 					--[[ local CurrentField = getgenv().Script_Setting['Selected_Field']
