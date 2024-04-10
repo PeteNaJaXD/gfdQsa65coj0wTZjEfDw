@@ -211,11 +211,9 @@ function Tween(Pos,CanWalk)
 	end
 end
 
-function StopTween(Statement)
-	if not Statement and _G.Tween then 
-		Remove_BC()
-		_G.Tween:Cancel()
-	end
+function StopTween()
+	Remove_BC()
+	_G.Tween:Cancel()
 end
 
 function FindDetectPart(MaxPart: number?, Filter : Instance?) : BasePart
@@ -353,7 +351,24 @@ task.spawn(function()
 		local status , response = pcall(function()
 			if getgenv().Script_Setting['Auto_Farm'] and getgenv().Script_Setting['Selected_Field'] then 
 				if Check_Capacity() < 100 then
-					local CurrentField = getgenv().Script_Setting['Selected_Field']
+					local Tokens = FindDetectPart(100, game.Workspace.Collectibles)
+					if IsPlayerInField() and #Tokens > 0 then
+						for i,v in pairs(FindDetectPart(100, game.Workspace.Collectibles)) do
+							if v.Parent ~= nil and v.Transparency , 1 and v.Parent and v ~= nil then
+								repeat task.wait()
+									Tween(PosToCFrame(v.Position) or GetFlowers().Position * CFrame.new(0, 3, 0), true)
+									Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
+									game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
+								until not getgenv().Script_Setting['Auto_Farm'] or v.Parent == nil or v.Transparency >= 1  or not v.Parent or not v or Check_Capacity() >= 100 or GetRotate(v) or Magnitude(v.Position) <= 10 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
+								if not getgenv().Script_Setting['Auto_Farm'] then StopTween() return end
+							end
+						end
+					else
+						Tween(PosToCFrame(v.Position) or GetFlowers().Position * CFrame.new(0, 3, 0), true)
+						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
+						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
+					end
+					--[[ local CurrentField = getgenv().Script_Setting['Selected_Field']
 					local target : BasePart = GetTarget()
 					repeat task.wait()
 						Tween(PosToCFrame(target.Position) * CFrame.new(0, 3, 0), true)
@@ -361,7 +376,7 @@ task.spawn(function()
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
 						print(GetRotate(target))
 					until not getgenv().Script_Setting['Auto_Farm'] or Check_Capacity() >= 100 or GetRotate(target) or Magnitude(target.Position) <= 10 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
-					StopTween(getgenv().Script_Setting['Auto_Farm'])
+					StopTween(getgenv().Script_Setting['Auto_Farm']) *]]
 				--[[ print(IsPlayerInField(), Check_Capacity())
 				if IsPlayerInField() and Check_Capacity() >= 95 then 
 					 or target.Parent == nil or target.Transparency >= 1  or not target.Parent or not target or*]]
@@ -373,7 +388,7 @@ task.spawn(function()
 							task.wait(.75)
 						end
 					until Check_Capacity() <= 0 or not getgenv().Script_Setting['Auto_Farm'] or not GetKeyTag()
-					StopTween(getgenv().Script_Setting['Auto_Farm'])
+					
                     task.wait(Get_Maximum_Bees()/Get_Maximum_Bees()+3)
 				end
 			end
