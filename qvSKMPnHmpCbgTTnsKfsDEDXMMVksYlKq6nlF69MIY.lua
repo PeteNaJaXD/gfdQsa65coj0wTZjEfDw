@@ -446,7 +446,7 @@ task.spawn(function()
                                     v.HumanoidRootPart.CanCollide = false
                                     v.Head.CanCollide = false
                                     _G.Mon = v.Name
-                                    _G.Pos = v.HumanoidRootPart.Position
+                                    _G.Pos = v.HumanoidRootPart.CFrame
                                     _G.BringMob = true
                                     repeat task.wait()
                                         Attack()
