@@ -363,7 +363,7 @@ task.spawn(function()
 									Tween(PosToCFrame(v.Position), true)
 									Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 									game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
-								until not getgenv().Script_Setting['Auto_Farm'] or v.Parent == nil or v.Transparency >= 1  or not v.Parent or not v or Check_Capacity() >= 100 or GetRotate(v) or Magnitude(v.Position) <= 10 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
+								until not getgenv().Script_Setting['Auto_Farm'] or v.Parent == nil or v.Transparency >= 1 or not v.Parent or not v or Check_Capacity() >= 100 or GetRotate(v) or Magnitude(v.Position) <= 10 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
 								if not getgenv().Script_Setting['Auto_Farm'] then StopTween() return end
 							end
 						end
@@ -373,7 +373,7 @@ task.spawn(function()
 							Tween(PosToCFrame(Flower.Position) * CFrame.new(0, 3, 0), true)
 							Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 							game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
-						until not getgenv().Script_Setting['Auto_Farm'] or Check_Capacity() >= 100 or Magnitude(v.Position) <= 10 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
+						until not getgenv().Script_Setting['Auto_Farm'] or Check_Capacity() >= 100 or Magnitude(v.Position) <= 5 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
 						if not getgenv().Script_Setting['Auto_Farm'] then StopTween() return end
 					end
 					--[[ local CurrentField = getgenv().Script_Setting['Selected_Field']
