@@ -354,9 +354,9 @@ task.spawn(function()
 					local Tokens = FindDetectPart(100, game.Workspace.Collectibles)
 					if IsPlayerInField() and #Tokens > 0 then
 						for i,v in pairs(FindDetectPart(100, game.Workspace.Collectibles)) do
-							if v.Parent ~= nil and v.Transparency , 1 and v.Parent and v ~= nil then
+							if v.Parent ~= nil and v.Transparency < 1 and v.Parent and v ~= nil then
 								repeat task.wait()
-									Tween(PosToCFrame(v.Position) or GetFlowers().Position * CFrame.new(0, 3, 0), true)
+									Tween(PosToCFrame(v.Position) * CFrame.new(0, 3, 0), true)
 									Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 									game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
 								until not getgenv().Script_Setting['Auto_Farm'] or v.Parent == nil or v.Transparency >= 1  or not v.Parent or not v or Check_Capacity() >= 100 or GetRotate(v) or Magnitude(v.Position) <= 10 or CurrentField ~= getgenv().Script_Setting['Selected_Field']
