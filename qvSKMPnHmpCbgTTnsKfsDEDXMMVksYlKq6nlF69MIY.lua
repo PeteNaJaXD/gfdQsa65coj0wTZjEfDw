@@ -217,13 +217,13 @@ function FindNilInstances(Name)
     return false
 end
 
-function MoveNilInstances()
+function MoveNilInstances(Name)
     for i,v in pairs(getnilinstances()) do
-        if v:GetAttribute('Active') ~= nil then
-            v:SetAttribute('Active' , true)
-            return
+        if (v.Name == Name or v.Name:find(Name)) and v:GetAttribute('Active') ~= nil then
+            v:SetAttribute('Active' , true) 
         end
     end
+    return
 end
 
 function IsQuestVisible()
@@ -365,14 +365,14 @@ function Hit()
     local ac = CombatFramework.activeController
     if ac and ac.equipped then
         task.spawn(function()
-            if tick() - cdnormal > 10 then
+            --[[ if tick() - cdnormal > 10 then
                 ac:attack()
                 cdnormal = tick()
-            else
+            else *]]
                 Animation.AnimationId = ac.anims.basic[2]
                 ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01)
                 game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "")
-            end
+            --end
         end)
     end
 end
@@ -388,7 +388,7 @@ LoadSetting()
 local Library : table = loadstring(request({Url = "https://raw.githubusercontent.com/CFrame3310/UI/main/Linoria.lua",Method = "GET"}).Body)()
 Library:Notify("Loaded Script.")
 local Window = Library:CreateWindow({
-    Title = 'Untitled Hub',
+    Title = 'Millemium RBLX Script',
     Center = true, 
     AutoShow = true,
 })
@@ -450,14 +450,14 @@ task.spawn(function()
                                 end
                             end
                         else
-                            if FindNilInstances(Data.Mob) then MoveNilInstances() end
+                            if FindNilInstances(Data.Mob) then MoveNilInstances(Data.Mob) end
                             for i,v in pairs(game.Workspace["_WorldOrigin"].EnemySpawns:GetChildren()) do
                                 if v.Name == Data.Mob or v.Name:find(Data.Mob) then
-                                    repeat task.wait(.25)
+                                    repeat task.wait()
                                         Tween(v.CFrame * CFrame.new(0, 50, 0))
-                                    until Magnitude(v.Position + Vector3.new(0, 50, 0)) <= 5 or not getgenv().Script_Setting['Auto_Farm_Level'] or not IsQuestVisible()
+                                    until Magnitude(v.Position + Vector3.new(0, 50, 0)) <= 3 or not getgenv().Script_Setting['Auto_Farm_Level'] or not IsQuestVisible()
                                     if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
-                                end-
+                                end
                             end
                         end
                     end
@@ -482,6 +482,7 @@ task.spawn(function()
                         if v.Humanoid:FindFirstChild("Animator") then
                             v.Humanoid:FindFirstChild("Animator"):Destroy()
                         end
+                        
                         --[[ if not v.HumanoidRootPart:FindFirstChild("BodyClip") then
                             local Noclip = Instance.new("BodyVelocity")
                             Noclip.Name = "BodyClip"
