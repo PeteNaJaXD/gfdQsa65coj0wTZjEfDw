@@ -196,16 +196,16 @@ function JoinTeam(Team)
 
     CommF_("SetTeam",Team)
     game:GetService("Workspace").Camera.CameraType = 'Custom'
-
+    game:GetService("Workspace").Camera.CameraSubject =  Humanoid()
     local Main = MainGUI()
     if MainGUI():FindFirstChild("ChooseTeam") then
         for _, v in pairs(Property) do
-            Main[v] = not Main[v]
-            if Team == 'Marines' and v == 'CrewButton' then 
-                Main['CrewButton'] = false 
-            end
+            Main[v].Visible = not Main[v].Visible
         end
     end
+    print(Team == 'Pirates' )
+    Main['CrewButton'].Visible = Team == 'Pirates' 
+
 end
 
 function FindNilInstances(Name)
@@ -305,17 +305,17 @@ local CameraShakerR = require(game.ReplicatedStorage.Util.CameraShaker)
 
 task.spawn(function()
     while true do task.wait()
-            pcall(function()
-                CameraShakerR:Stop()
-                CombatFramework.activeController.attacking = false
-                CombatFramework.activeController.timeToNextAttack = -(math.huge^math.huge^math.huge)
-                CombatFramework.activeController.increment = 4
-                CombatFramework.activeController.hitboxMagnitude = 100
-                CombatFramework.activeController.blocking = false
-                CombatFramework.activeController.timeToNextBlock = 0
-                CombatFramework.activeController.focusStart = 0
-                CombatFramework.activeController.humanoid.AutoRotate = true
-            end)
+        pcall(function()
+            CameraShakerR:Stop()
+            CombatFramework.activeController.attacking = false
+            CombatFramework.activeController.timeToNextAttack = -(math.huge^math.huge^math.huge)
+            CombatFramework.activeController.increment = 4
+            CombatFramework.activeController.hitboxMagnitude = 100
+            CombatFramework.activeController.blocking = false
+            CombatFramework.activeController.timeToNextBlock = 0
+            CombatFramework.activeController.focusStart = 0
+            CombatFramework.activeController.humanoid.AutoRotate = true
+        end)
     end
 end)
 
@@ -338,7 +338,7 @@ function getHits(Size)
             table.insert(Hits,Human.RootPart)
         end
     end
-    for i=1,#Characters do 
+    --[[ for i=1,#Characters do 
         local v = Characters[i]
         if v ~= game.Players.LocalPlayer.Character then
             local Human = v:FindFirstChildOfClass("Humanoid")
@@ -346,7 +346,7 @@ function getHits(Size)
                 table.insert(Hits,Human.RootPart)
             end
         end
-    end
+    end *]]
     return Hits
 end
 
@@ -358,16 +358,9 @@ function Boost()
     end)
 end
 
-function Unboost()
-    spawn(function()
-        --print("Unboost ของจริง555")
-        --game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("unequipWeapon",tostring(WeaponModel()))
-    end)
-end
 
 local cdnormal = tick()
 local Animation = Instance.new("Animation")
-local CooldownFastAttack = 0.000000
 function Hit()
     local ac = CombatFramework.activeController
     if ac and ac.equipped then
@@ -380,7 +373,6 @@ function Hit()
                 ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01)
                 game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "")
             end
-            task.wait()
         end)
     end
 end
@@ -433,6 +425,7 @@ task.spawn(function()
                         repeat task.wait()
                             Tween(ToCFrame(Data.QuestPos))
                             if Magnitude(ToPos(Data.QuestPos)) <= 3 then
+                                task.wait(.5)
                                 CommF_("StartQuest", Data.QuestName, Data.QuestLevel)
                             end
                         until not getgenv().Script_Setting['Auto_Farm_Level'] or IsQuestVisible()
@@ -460,12 +453,11 @@ task.spawn(function()
                             if FindNilInstances(Data.Mob) then MoveNilInstances() end
                             for i,v in pairs(game.Workspace["_WorldOrigin"].EnemySpawns:GetChildren()) do
                                 if v.Name == Data.Mob or v.Name:find(Data.Mob) then
-                                    repeat task.wait()
+                                    repeat task.wait(.25)
                                         Tween(v.CFrame * CFrame.new(0, 50, 0))
                                     until Magnitude(v.Position + Vector3.new(0, 50, 0)) <= 5 or not getgenv().Script_Setting['Auto_Farm_Level'] or not IsQuestVisible()
                                     if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
-                                    task.wait(.25)
-                                end--[[  ]]
+                                end-
                             end
                         end
                     end
@@ -490,13 +482,13 @@ task.spawn(function()
                         if v.Humanoid:FindFirstChild("Animator") then
                             v.Humanoid:FindFirstChild("Animator"):Destroy()
                         end
-                        if not v.HumanoidRootPart:FindFirstChild("BodyClip") then
+                        --[[ if not v.HumanoidRootPart:FindFirstChild("BodyClip") then
                             local Noclip = Instance.new("BodyVelocity")
                             Noclip.Name = "BodyClip"
                             Noclip.Parent = v.HumanoidRootPart
                             Noclip.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
                             Noclip.Velocity = Vector3.new(0,0,0)
-                        end 
+                        end  *]]
                         sethiddenproperty(game.Players.LocalPlayer, "MaximumSimulationRadius",  math.huge)
                         sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  9e20)
                     end
