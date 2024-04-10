@@ -351,14 +351,14 @@ function Unboost()
     end)
 end
 
-local cdnormal = 0
+local cdnormal = tick()
 local Animation = Instance.new("Animation")
 local CooldownFastAttack = 0.000000
 function Hit()
     local ac = CombatFramework.activeController
     if ac and ac.equipped then
         task.spawn(function()
-            if tick() - cdnormal > 0 then
+            if tick() - cdnormal > 5 then
                 ac:attack()
                 cdnormal = tick()
             else
@@ -366,14 +366,14 @@ function Hit()
                 ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01)
                 game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "")
             end
-            task.wait(0.12)
+            task.wait()
         end)
     end
 end
 
 function Attack()
     Hit()
-    wait()
+    task.wait()
     Boost()
 end
 
