@@ -461,7 +461,7 @@ task.spawn(function()
                             for i,v in pairs(game.Workspace["_WorldOrigin"].EnemySpawns:GetChildren()) do
                                 if v.Name == Data.Mob or v.Name:find(Data.Mob) then
                                     repeat task.wait()
-                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(0, 50, 0))
+                                        Tween(v.CFrame * CFrame.new(0, 50, 0))
                                     until Magnitude(v.Position + Vector3.new(0, 50, 0)) <= 5 or not getgenv().Script_Setting['Auto_Farm_Level'] or not IsQuestVisible()
                                     if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
                                     task.wait(.25)
@@ -485,10 +485,11 @@ task.spawn(function()
                         v.Humanoid.WalkSpeed = 0
                         v.HumanoidRootPart.CanCollide = false
                         v.Head.CanCollide = false
-                        v.HumanoidRootPart.CFrame = ToCFrame(_G.Pos)
-                        v.Humanoid:ChangeState(11)
+                        v.HumanoidRootPart.CFrame = _G.Pos
                         v.Humanoid:ChangeState(14)
-                        v.Humanoid:FindFirstChild("Animator"):Destroy()
+                        if v.Humanoid:FindFirstChild("Animator") then
+                            v.Humanoid:FindFirstChild("Animator"):Destroy()
+                        end
                         if not v.HumanoidRootPart:FindFirstChild("BodyClip") then
                             local Noclip = Instance.new("BodyVelocity")
                             Noclip.Name = "BodyClip"
