@@ -11,7 +11,7 @@ else
 end
 
 
-function CFrameToPos(pos)
+function ToPos(pos)
 	local convertion = {
 		['Vector3'] = function(pos)
 			return pos
@@ -23,7 +23,7 @@ function CFrameToPos(pos)
 	return convertion[typeof(pos)](pos)
 end
 
-function PosToCFrame(pos)
+function ToCFrame(pos)
 	local convertion = {
 		['Vector3'] = function(pos)
 			return CFrame.new(pos)
@@ -91,7 +91,7 @@ function Humanoid() : BasePart
 end
 
 function Magnitude(pos : Vector3) : number
-	return (HumanoidRootPart().Position - CFrameToPos(pos)).Magnitude
+	return (HumanoidRootPart().Position - ToPos(pos)).Magnitude
 end
 
 function Create_BC()
@@ -127,12 +127,12 @@ function NoClip(Statement : boolean)
 end
 
 function TP(pos)
-    HumanoidRootPart().CFrame = PosToCFrame(pos)
+    HumanoidRootPart().CFrame = ToCFrame(pos)
 end
 
 function Tween(Pos)
-    local CPos = PosToCFrame(Pos)
-    local PPos =  CFrameToPos(Pos)
+    local CPos = ToCFrame(Pos)
+    local PPos =  ToPos(Pos)
     local Distance = Magnitude(PPos)
     local Speed
     if Distance <= 200 then
@@ -166,6 +166,7 @@ function StopTween(Statement)
 	if not Statement then 
 		Remove_BC()
 		_G.TweenPlayer:Cancel()
+        return
 	end
 end
 
@@ -284,6 +285,97 @@ function AutoCheckQuest()
     return Data
 end
 
+local Module = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
+local CombatFramework = debug.getupvalues(Module)[2]
+local CameraShakerR = require(game.ReplicatedStorage.Util.CameraShaker)
+
+task.spawn(function()
+    while true do task.wait()
+            pcall(function()
+                CameraShakerR:Stop()
+                CombatFramework.activeController.attacking = false
+                CombatFramework.activeController.timeToNextAttack = -(math.huge^math.huge^math.huge)
+                CombatFramework.activeController.increment = 4
+                CombatFramework.activeController.hitboxMagnitude = 100
+                CombatFramework.activeController.blocking = false
+                CombatFramework.activeController.timeToNextBlock = 0
+                CombatFramework.activeController.focusStart = 0
+                CombatFramework.activeController.humanoid.AutoRotate = true
+            end)
+    end
+end)
+
+function WeaponModel() 
+    local AC = CombatFramework.activeController
+    local Blades = AC.blades[1]
+    if not Blades then return end
+    while Blades.Parent~=game.Players.LocalPlayer.Character do Blades=Blades.Parent end
+    return Blades
+end
+
+function getHits(Size)
+    local Hits = {}
+    local Enemies = workspace.Enemies:GetChildren()
+    local Characters = workspace.Characters:GetChildren()
+    for i=1,#Enemies do 
+        local v = Enemies[i]
+        local Human = v:FindFirstChildOfClass("Humanoid")
+        if Human and Human.RootPart and Human.Health > 0 and game.Players.LocalPlayer:DistanceFromCharacter(Human.RootPart.Position) < Size+55 then
+            table.insert(Hits,Human.RootPart)
+        end
+    end
+    for i=1,#Characters do 
+        local v = Characters[i]
+        if v ~= game.Players.LocalPlayer.Character then
+            local Human = v:FindFirstChildOfClass("Humanoid")
+            if Human and Human.RootPart and Human.Health > 0 and game.Players.LocalPlayer:DistanceFromCharacter(Human.RootPart.Position) < Size+55 then
+                table.insert(Hits,Human.RootPart)
+            end
+        end
+    end
+    return Hits
+end
+
+function Boost()
+    spawn(function()
+        if CombatFramework.activeController then
+            game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(WeaponModel()))
+        end
+    end)
+end
+
+function Unboost()
+    spawn(function()
+        --print("Unboost ของจริง555")
+        --game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("unequipWeapon",tostring(WeaponModel()))
+    end)
+end
+
+local cdnormal = 0
+local Animation = Instance.new("Animation")
+local CooldownFastAttack = 0.000000
+function Hit()
+    local ac = CombatFramework.activeController
+    if ac and ac.equipped then
+        task.spawn(function()
+            if tick() - cdnormal > 0 then
+                ac:attack()
+                cdnormal = tick()
+            else
+                Animation.AnimationId = ac.anims.basic[2]
+                ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01)
+                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "")
+            end
+            task.wait(0.12)
+        end)
+    end
+end
+
+function Attack()
+    Hit()
+    wait()
+    Boost()
+end
 
 CreateFile()
 LoadSetting()
@@ -326,8 +418,8 @@ task.spawn(function()
                     end
                     if LocalPlayer().Character.Humanoid.Health > 0 and not IsQuestVisible() then
                         repeat task.wait()
-                            Tween(PosToCFrame(Data.QuestPos))
-                            if Magnitude(CFrameToPos(Data.QuestPos)) <= 3 then
+                            Tween(ToCFrame(Data.QuestPos))
+                            if Magnitude(ToPos(Data.QuestPos)) <= 3 then
                                 CommF_("StartQuest", Data.QuestName, Data.QuestLevel)
                             end
                         until not getgenv().Script_Setting['Auto_Farm_Level'] or IsQuestVisible()
@@ -343,7 +435,8 @@ task.spawn(function()
                                     _G.Pos = v.HumanoidRootPart.CFrame *]]
                                     StartMagnet = true
                                     repeat task.wait()
-                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(0, 50, 0))
+                                        Attack()
+                                        Tween(ToCFrame(v.HumanoidRootPart.Position) * CFrame.new(0, 50, 0))
                                     until mixfarm or not getgenv().Script_Setting['Auto_Farm_Level'] or not v.Parent or v.Humanoid.Health <= 0 or not v:FindFirstChild('Humanoid') or not v:FindFirstChild('HumanoidRootPart') or not IsQuestVisible()
                                     StopTween(getgenv().Script_Setting['Auto_Farm_Level'])
                                     StartMagnet = false
