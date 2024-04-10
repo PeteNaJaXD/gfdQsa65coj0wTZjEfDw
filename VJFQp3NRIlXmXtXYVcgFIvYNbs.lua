@@ -364,7 +364,7 @@ task.spawn(function()
 							end
 						end
 					else
-						Tween(PosToCFrame(v.Position) or GetFlowers().Position * CFrame.new(0, 3, 0), true)
+						Tween(PosToCFrame(v.Position) * CFrame.new(0, 3, 0), true)
 						Character().Humanoid.WalkSpeed = getgenv().Script_Setting['Walk_Speed']
 						game:GetService("ReplicatedStorage").Events.ToolCollect:FireServer()
 					end
