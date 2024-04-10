@@ -358,7 +358,7 @@ function Hit()
     local ac = CombatFramework.activeController
     if ac and ac.equipped then
         task.spawn(function()
-            if tick() - cdnormal > 5 then
+            if tick() - cdnormal > 1 then
                 ac:attack()
                 cdnormal = tick()
             else
@@ -373,7 +373,6 @@ end
 
 function Attack()
     Hit()
-    task.wait()
     Boost()
 end
 
@@ -428,11 +427,11 @@ task.spawn(function()
                         if game.Workspace.Enemies:FindFirstChild(Data.Mob) then
                             for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                                 if v.Name == Data.Mob and v:FindFirstChild('HumanoidRootPart') and v:FindFirstChild('Humanoid') and v.Humanoid.Health > 0 then
---[[                                     v.HumanoidRootPart.CanCollide = false
+                                    v.HumanoidRootPart.CanCollide = false
                                     v.Humanoid.WalkSpeed = 0
                                     v.Head.CanCollide = false
                                     _G.Mon = v.Name
-                                    _G.Pos = v.HumanoidRootPart.CFrame *]]
+                                    _G.Pos = v.HumanoidRootPart.CFrame
                                     StartMagnet = true
                                     repeat task.wait()
                                         Attack()
@@ -444,7 +443,9 @@ task.spawn(function()
                             end
                         else
                             for i,v in pairs(game.Workspace["_WorldOrigin"].EnemySpawns:GetChildren()) do
+                                
                                 if v.Name == Data.Mob or v.Name:find(Data.Mob) then
+                                    print(v)
                                     repeat task.wait()
                                         Tween(v.HumanoidRootPart.CFrame * CFrame.new(0, 50, 0))
                                     until Magnitude(v.Position + Vector3.new(0, 50, 0)) <= 5 or not getgenv().Script_Setting['Auto_Farm_Level'] or not IsQuestVisible()
