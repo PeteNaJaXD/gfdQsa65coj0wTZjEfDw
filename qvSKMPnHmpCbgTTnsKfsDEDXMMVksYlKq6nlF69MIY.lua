@@ -441,8 +441,9 @@ task.spawn(function()
                         if game.Workspace.Enemies:FindFirstChild(Data.Mob) then
                             for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                                 if v.Name == Data.Mob and v:FindFirstChild('HumanoidRootPart') and v:FindFirstChild('Humanoid') and v.Humanoid.Health > 0 then
-                                    v.HumanoidRootPart.CanCollide = false
                                     v.Humanoid.WalkSpeed = 0
+                                    v.Humanoid:ChangeState(14)
+                                    v.HumanoidRootPart.CanCollide = false
                                     v.Head.CanCollide = false
                                     _G.Mon = v.Name
                                     _G.Pos = v.HumanoidRootPart.Position
@@ -463,6 +464,7 @@ task.spawn(function()
                                         Tween(v.HumanoidRootPart.CFrame * CFrame.new(0, 50, 0))
                                     until Magnitude(v.Position + Vector3.new(0, 50, 0)) <= 5 or not getgenv().Script_Setting['Auto_Farm_Level'] or not IsQuestVisible()
                                     if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
+                                    task.wait(.25)
                                 end--[[  ]]
                             end
                         end
