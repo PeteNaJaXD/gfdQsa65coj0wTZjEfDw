@@ -149,8 +149,6 @@ function Tween(Pos)
         Speed = 300
     elseif Distance > 1500 then
         Speed = 275 
-    else
-        Speed = math.huge
     end
     _G.TweenPlayer = game:GetService("TweenService"):Create(HumanoidRootPart(),TweenInfo.new(Distance/Speed, Enum.EasingStyle.Linear),{CFrame = CPos})
     
@@ -162,12 +160,10 @@ function Tween(Pos)
     end
 end
 
-function StopTween(Statement)
-	if not Statement then 
-		Remove_BC()
-		_G.TweenPlayer:Cancel()
-        return
-	end
+function StopTween()
+    _G.BringMob = false
+	Remove_BC()
+	_G.TweenPlayer:Cancel()
 end
 
 function CommF_(...)
@@ -208,6 +204,24 @@ function JoinTeam(Team)
             if Team == 'Marines' and v == 'CrewButton' then 
                 Main['CrewButton'] = false 
             end
+        end
+    end
+end
+
+function FindNilInstances(Name)
+    for i,v in pairs(getnilinstances()) do
+        if v.Name == Name or v.Name:find(Name) then
+            return true
+        end
+    end
+    return false
+end
+
+function MoveNilInstances()
+    for i,v in pairs(getnilinstances()) do
+        if v:GetAttribute('Active') ~= nil then
+            v:SetAttribute('Active' , true)
+            return
         end
     end
 end
@@ -358,7 +372,7 @@ function Hit()
     local ac = CombatFramework.activeController
     if ac and ac.equipped then
         task.spawn(function()
-            if tick() - cdnormal > 1 then
+            if tick() - cdnormal > 2 then
                 ac:attack()
                 cdnormal = tick()
             else
@@ -422,7 +436,7 @@ task.spawn(function()
                                 CommF_("StartQuest", Data.QuestName, Data.QuestLevel)
                             end
                         until not getgenv().Script_Setting['Auto_Farm_Level'] or IsQuestVisible()
-                        StopTween(getgenv().Script_Setting['Auto_Farm_Level'])
+                        if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
                     elseif IsQuestVisible() then
                         if game.Workspace.Enemies:FindFirstChild(Data.Mob) then
                             for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
@@ -431,25 +445,24 @@ task.spawn(function()
                                     v.Humanoid.WalkSpeed = 0
                                     v.Head.CanCollide = false
                                     _G.Mon = v.Name
-                                    _G.Pos = v.HumanoidRootPart.CFrame
-                                    StartMagnet = true
+                                    _G.Pos = v.HumanoidRootPart.Position
+                                    _G.BringMob = true
                                     repeat task.wait()
                                         Attack()
                                         Tween(ToCFrame(v.HumanoidRootPart.Position) * CFrame.new(0, 50, 0))
                                     until mixfarm or not getgenv().Script_Setting['Auto_Farm_Level'] or not v.Parent or v.Humanoid.Health <= 0 or not v:FindFirstChild('Humanoid') or not v:FindFirstChild('HumanoidRootPart') or not IsQuestVisible()
-                                    StopTween(getgenv().Script_Setting['Auto_Farm_Level'])
-                                    StartMagnet = false
+                                    if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
+                                    _G.BringMob = false
                                 end
                             end
                         else
+                            if FindNilInstances(Data.Mob) then MoveNilInstances() end
                             for i,v in pairs(game.Workspace["_WorldOrigin"].EnemySpawns:GetChildren()) do
-                                
                                 if v.Name == Data.Mob or v.Name:find(Data.Mob) then
-                                    print(v)
                                     repeat task.wait()
                                         Tween(v.HumanoidRootPart.CFrame * CFrame.new(0, 50, 0))
                                     until Magnitude(v.Position + Vector3.new(0, 50, 0)) <= 5 or not getgenv().Script_Setting['Auto_Farm_Level'] or not IsQuestVisible()
-                                    StopTween(getgenv().Script_Setting['Auto_Farm_Level'])
+                                    if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
                                 end--[[  ]]
                             end
                         end
@@ -458,6 +471,27 @@ task.spawn(function()
             end
         end)
         if not success then warn('Auto Farm : ', err) end
+    end
+end)
+
+task.spawn(function() 
+    while task.wait() do
+        if getgenv().Script_Setting.Bring and StartMagnet then
+            pcall(function() -- v.Name == _G.Mon and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-v.HumanoidRootPart.Position).Magnitude
+                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if v.Name == _G.Mon and Magnitude(_G.Pos) <= 550 then
+                        v.Humanoid.WalkSpeed = 0
+                        v.HumanoidRootPart.CanCollide = false
+                        v.Head.CanCollide = false
+                        v.HumanoidRootPart.CFrame = ToCFrame(_G.Pos)
+                        v.Humanoid:ChangeState(14)
+                        v.Humanoid:FindFirstChild("Animator"):Destroy()
+                        sethiddenproperty(game.Players.LocalPlayer, "MaximumSimulationRadius",  math.huge)
+                        sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  9e20)
+                    end
+                end
+            end)
+        end
     end
 end)
 
