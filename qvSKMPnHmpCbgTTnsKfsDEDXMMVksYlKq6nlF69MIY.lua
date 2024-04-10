@@ -372,7 +372,7 @@ function Hit()
     local ac = CombatFramework.activeController
     if ac and ac.equipped then
         task.spawn(function()
-            if tick() - cdnormal > 2 then
+            if tick() - cdnormal > 10 then
                 ac:attack()
                 cdnormal = tick()
             else
@@ -479,9 +479,9 @@ end)
 task.spawn(function() 
     while task.wait() do
         if _G.BringMob then
-            pcall(function() -- v.Name == _G.Mon and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-v.HumanoidRootPart.Position).Magnitude
+            local success, err = pcall(function() -- v.Name == _G.Mon and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-v.HumanoidRootPart.Position).Magnitude
                 for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
-                    if v.Name == _G.Mon and Magnitude(_G.Pos) <= 550 then
+                    if v.Name == _G.Mon and Magnitude(_G.Pos) <= 550 and v:FindFirstChild('HumanoidRootPart') and v:FindFirstChild('Humanoid') and v.Humanoid.Health > 0 then
                         v.Humanoid.WalkSpeed = 0
                         v.HumanoidRootPart.CanCollide = false
                         v.Head.CanCollide = false
@@ -502,6 +502,7 @@ task.spawn(function()
                     end
                 end
             end)
+            if not success then warn('Bring Mob : ', err) end
         end
     end
 end)
