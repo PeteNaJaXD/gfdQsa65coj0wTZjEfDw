@@ -478,7 +478,7 @@ end)
 
 task.spawn(function() 
     while task.wait() do
-        if getgenv().Script_Setting.Bring and StartMagnet then
+        if _G.BringMob then
             pcall(function() -- v.Name == _G.Mon and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-v.HumanoidRootPart.Position).Magnitude
                 for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                     if v.Name == _G.Mon and Magnitude(_G.Pos) <= 550 then
