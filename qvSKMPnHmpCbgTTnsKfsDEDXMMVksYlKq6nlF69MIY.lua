@@ -484,8 +484,16 @@ task.spawn(function()
                         v.HumanoidRootPart.CanCollide = false
                         v.Head.CanCollide = false
                         v.HumanoidRootPart.CFrame = ToCFrame(_G.Pos)
+                        v.Humanoid:ChangeState(11)
                         v.Humanoid:ChangeState(14)
                         v.Humanoid:FindFirstChild("Animator"):Destroy()
+                        if not v.HumanoidRootPart:FindFirstChild("BodyClip") then
+                            local Noclip = Instance.new("BodyVelocity")
+                            Noclip.Name = "BodyClip"
+                            Noclip.Parent = v.HumanoidRootPart
+                            Noclip.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
+                            Noclip.Velocity = Vector3.new(0,0,0)
+                        end 
                         sethiddenproperty(game.Players.LocalPlayer, "MaximumSimulationRadius",  math.huge)
                         sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  9e20)
                     end
