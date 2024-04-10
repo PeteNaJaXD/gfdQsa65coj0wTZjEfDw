@@ -33,11 +33,11 @@ function Character() : Model
 	return LocalPlayer().Character or LocalPlayer().CharacterAdded:Wait()
 end
 
-function Humanoid() : BasePart
+function HumanoidRootPart() : BasePart
 	return Character().HumanoidRootPart or Character().PrimaryPart
 end
 
-function HumanoidRootPart() : BasePart
+function Humanoid() : BasePart
 	return Character().Humanoid
 end
 
