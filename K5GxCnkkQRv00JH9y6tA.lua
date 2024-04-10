@@ -33,11 +33,11 @@ function Character() : Model
 	return LocalPlayer().Character or LocalPlayer().CharacterAdded:Wait()
 end
 
-function Humanoid() : BasePart
+function HumanoidRootPart() : BasePart
 	return Character().HumanoidRootPart or Character().PrimaryPart
 end
 
-function HumanoidRootPart() : BasePart
+function Humanoid() : BasePart
 	return Character().Humanoid
 end
 
@@ -239,7 +239,7 @@ task.spawn(function()
                     repeat task.wait()
                         Tween(CFrame.new(28293.2109375, 14896.54296875, 84.48397827148438))
                     until not getgenv().Script_Setting['Auto_Race_Trial'] or LocalPlayer().PlayerGui.Main.Timer.Visible or game:GetService("Workspace").Map["Temple of Time"].FFABorder.Forcefield.Transparency < 1
-                    StopTween(getgenv().Script_Setting.AutoCompleteTrial)
+                    StopTween(getgenv().Script_Setting['Auto_Race_Trial'])
                 elseif My_Race == 'Skypiea' then
                     if game.Workspace.Map.SkyTrial.Model:FindFirstChild('FinishPart') then
                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace.Map.SkyTrial.Model.FinishPart.CFrame
