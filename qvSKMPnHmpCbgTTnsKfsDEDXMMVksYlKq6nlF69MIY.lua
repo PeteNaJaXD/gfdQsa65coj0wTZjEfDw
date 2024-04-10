@@ -75,18 +75,18 @@ function LoadSetting()
 end
 
 function LocalPlayer() : Player
-	return LocalPlayer()
+	return game.Players.LocalPlayer
 end
 
 function Character() : Model
 	return LocalPlayer().Character or LocalPlayer().CharacterAdded:Wait()
 end
 
-function Humanoid() : BasePart
+function HumanoidRootPart() : BasePart
 	return Character().HumanoidRootPart or Character().PrimaryPart
 end
 
-function HumanoidRootPart() : BasePart
+function Humanoid() : BasePart
 	return Character().Humanoid
 end
 
@@ -326,8 +326,8 @@ task.spawn(function()
                     end
                     if LocalPlayer().Character.Humanoid.Health > 0 and not IsQuestVisible() then
                         repeat task.wait()
-                            Tween(CFrame.new(DataList.QuestPos))
-                            if Magnitude(Data.QuestPos).Magnitude <= 3 then
+                            Tween(PosToCFrame(Data.QuestPos))
+                            if Magnitude(CFrameToPos(Data.QuestPos)) <= 3 then
                                 CommF_("StartQuest", Data.QuestName, Data.QuestLevel)
                             end
                         until not getgenv().Script_Setting['Auto_Farm_Level'] or IsQuestVisible()
