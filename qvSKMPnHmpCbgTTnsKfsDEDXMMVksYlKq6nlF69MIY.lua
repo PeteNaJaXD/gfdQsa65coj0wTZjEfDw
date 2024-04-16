@@ -372,10 +372,10 @@ function Hit()
             if tick() - cdnormal > 7 then
                 ac:attack()
                 cdnormal = tick()
-            else
-                --[[ Animation.AnimationId = ac.anims.basic[2]
-                ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01) *]]
-                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "")
+            --[[ else
+                Animation.AnimationId = ac.anims.basic[2]
+                ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01)
+                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "") *]]
             end
         end)
     end
