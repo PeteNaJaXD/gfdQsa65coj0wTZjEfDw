@@ -170,6 +170,10 @@ function CommF_(...)
     return game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(...)
 end
 
+function CommE(...)
+    return game:GetService("ReplicatedStorage").Remotes.CommE:FireServer(...)
+end
+
 local Property = {
     'ChooseTeam',
     'Mute',
@@ -382,6 +386,29 @@ function Attack()
     Boost()
 end
 
+function GetTool()
+    local Tool_Type = getgenv().Script_Setting['Selected_Weapon']
+    for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if v:IsA("Tool") and v.ToolTip == Tool_Type then
+            return v
+        end
+    end
+    return
+end
+
+function Equip()
+    local succes, err = pcall(function()
+        local Tool = GetTool()
+        if Humanoid().Health > 0 and not Character():FindFirstChild(Tool) then
+            if not Character():FindFirstChild("HasBuso") then
+                CommF_("Buso")
+            end
+            Humanoid():EquipTool(Tool)
+        end
+    end)
+    if not succes then print('Equip Weapon status : ',succes)
+end
+
 CreateFile()
 LoadSetting()
 
@@ -409,6 +436,15 @@ Group.Main_Group:AddToggle('Auto Farm Level', {
     Default = getgenv().Script_Setting['Auto_Farm_Level'],
 }):OnChanged(function(v)
     getgenv().Script_Setting['Auto_Farm_Level'] = v
+	SaveSetting()
+end) 
+
+Group.Setting_Group:AddDropdown('Select Weapon', {
+	Text = 'Select Weapon',
+	Values = {"Melee","Blox Fruit","Sword","Gun"},
+	Default = getgenv().Script_Setting['Selected_Weapon'] or 'Melee'
+}):OnChanged(function(v)
+    getgenv().Script_Setting['Selected_Weapon'] = v
 	SaveSetting()
 end) 
 
@@ -443,6 +479,7 @@ task.spawn(function()
                                     _G.BringMob = true
                                     repeat task.wait()
                                         Attack()
+                                        Equip()
                                         Tween(ToCFrame(v.HumanoidRootPart.Position) * CFrame.new(0, 50, 0))
                                     until mixfarm or not getgenv().Script_Setting['Auto_Farm_Level'] or not v.Parent or v.Humanoid.Health <= 0 or not v:FindFirstChild('Humanoid') or not v:FindFirstChild('HumanoidRootPart') or not IsQuestVisible()
                                     if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
@@ -482,14 +519,13 @@ task.spawn(function()
                         if v.Humanoid:FindFirstChild("Animator") then
                             v.Humanoid:FindFirstChild("Animator"):Destroy()
                         end
-                        
-                        --[[ if not v.HumanoidRootPart:FindFirstChild("BodyClip") then
+                        if not v.HumanoidRootPart:FindFirstChild("BodyClip") then
                             local Noclip = Instance.new("BodyVelocity")
                             Noclip.Name = "BodyClip"
                             Noclip.Parent = v.HumanoidRootPart
                             Noclip.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
                             Noclip.Velocity = Vector3.new(0,0,0)
-                        end  *]]
+                        end
                         sethiddenproperty(game.Players.LocalPlayer, "MaximumSimulationRadius",  math.huge)
                         sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  9e20)
                     end
