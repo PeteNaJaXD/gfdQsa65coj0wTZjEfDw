@@ -399,22 +399,21 @@ function GetTool()
     local Tool_Type = getgenv().Script_Setting['Selected_Weapon']
     for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
         if v:IsA("Tool") and v.ToolTip == Tool_Type then
-            _G.Tool = v
-            return
+            return v
         end
     end
-    return
+    return nil
 end
 
 function Equip()
     local succes, err = pcall(function()
         GetTool()
         print(_G.Tool)
-        if Humanoid().Health > 0 and not Character()[_G.Tool] then
+        if Humanoid().Health > 0 and GetTool() then
             if not Character():FindFirstChild("HasBuso") then
                 CommF_("Buso")
             end
-            Humanoid():EquipTool(_G.Tool)
+            Humanoid():EquipTool(GetTool())
         else
             Attack()
         end
