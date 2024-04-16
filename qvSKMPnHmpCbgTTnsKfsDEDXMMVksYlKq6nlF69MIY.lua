@@ -369,7 +369,7 @@ function Hit()
     local ac = CombatFramework.activeController
     if ac and ac.equipped then
         task.spawn(function()
-            if tick() - cdnormal > 5 then
+            if tick() - cdnormal > 7 then
                 ac:attack()
                 cdnormal = tick()
             else
@@ -394,12 +394,14 @@ function GetTool()
             return
         end
     end
+    return
 end
 
 function Equip()
     local succes, err = pcall(function()
         GetTool()
-        if Humanoid().Health > 0 and not Character():FindFirstChild(_G.Tool) then
+        print(_G.Tool)
+        if Humanoid().Health > 0 and not Character():FindFirstChild(_G.Tool.Name) then
             if not Character():FindFirstChild("HasBuso") then
                 CommF_("Buso")
             end
