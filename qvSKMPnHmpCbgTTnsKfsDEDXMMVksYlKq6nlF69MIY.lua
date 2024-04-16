@@ -119,7 +119,7 @@ function Farm_BC(Statement)
 end
 
 function NoClip(Statement : boolean)
-	for _,v in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
+	for _,v in pairs(game:GetService('Players').LocalPlayer.Character:GetDescendants()) do
 		if v:IsA('BasePart') then
 			v.CanCollide = not Statement
 		end
@@ -152,7 +152,7 @@ function Tween(Pos, Options)
         Speed = 275 
     end
     _G.TweenPlayer = game:GetService("TweenService"):Create(HumanoidRootPart(),TweenInfo.new(Distance/Speed, Enum.EasingStyle.Linear),{CFrame = CPos})
-    Humanoid():ChangeState(14)
+    Humanoid():ChangeState(18)
     if Magnitude(PPos) <= 150 and not Options['Only_Tween'] then
         _G.TweenPlayer:Cancel()
         TP(CPos)
@@ -504,7 +504,7 @@ task.spawn(function()
                                 if v.Name == Data.Mob or v.Name:find(Data.Mob) then
                                     repeat task.wait()
                                         Tween(v.CFrame * CFrame.new(0, 50, 0),{['Only_Tween'] = true})
-                                    until Magnitude(v.Position + Vector3.new(0, 50, 0)) <= 1 or not getgenv().Script_Setting['Auto_Farm_Level'] or not IsQuestVisible()
+                                    until Magnitude(v.Position + Vector3.new(0, 50, 0)) < 1 or not getgenv().Script_Setting['Auto_Farm_Level'] or not IsQuestVisible()
                                     if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
                                 end
                             end
