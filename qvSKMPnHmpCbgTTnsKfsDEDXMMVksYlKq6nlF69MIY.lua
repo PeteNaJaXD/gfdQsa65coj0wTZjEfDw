@@ -130,7 +130,7 @@ function TP(pos)
     HumanoidRootPart().CFrame = ToCFrame(pos)
 end
 
-function Tween(Pos)
+function Tween(Pos,Options)
     local CPos = ToCFrame(Pos)
     local PPos =  ToPos(Pos)
     local Distance = Magnitude(PPos)
@@ -152,7 +152,7 @@ function Tween(Pos)
     end
     _G.TweenPlayer = game:GetService("TweenService"):Create(HumanoidRootPart(),TweenInfo.new(Distance/Speed, Enum.EasingStyle.Linear),{CFrame = CPos})
     Humanoid():ChangeState(14)
-    if Magnitude(PPos) <= 150 then
+    if Magnitude(PPos) <= 150 and not Options['Only_Tween'] then
         _G.TweenPlayer:Cancel()
         TP(CPos)
     else
@@ -371,16 +371,16 @@ function Hit()
         coroutine.wrap(function()
             --if tick() - cdnormal > 7 then
                 ac:attack()
+                spawn(function()
+                    if ac and tick() - cdnormal > 5 then
+                        game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(WeaponModel()))
+                        cdnormal = tick()
+                    end
+                end)
                 Animation.AnimationId = ac.anims.basic[1]
                 ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01)
                 game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "")
-                spawn(function()
-                    if ac then
-                        game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(WeaponModel()))
-                    end
-                end)
-                task.wait(.1)
-               -- cdnormal = tick()
+               -- c
             --[[ else
                 Animation.AnimationId = ac.anims.basic[2]
                 ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01)
@@ -502,9 +502,8 @@ task.spawn(function()
                             for i,v in pairs(game.Workspace["_WorldOrigin"].EnemySpawns:GetChildren()) do
                                 if v.Name == Data.Mob or v.Name:find(Data.Mob) then
                                     repeat task.wait()
-                                        Tween(v.CFrame * CFrame.new(0, 50, 0))
+                                        Tween(v.CFrame * CFrame.new(0, 50, 0),{['Only_Tween'] = true})
                                     until Magnitude(v.Position + Vector3.new(0, 50, 0)) <= 1 or not getgenv().Script_Setting['Auto_Farm_Level'] or not IsQuestVisible()
-                                    wait(.5)
                                     if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
                                 end
                             end
