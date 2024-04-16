@@ -369,14 +369,14 @@ function Hit()
     local ac = CombatFramework.activeController
     if ac and ac.equipped then
         task.spawn(function()
-            --[[ if tick() - cdnormal > 10 then
+            if tick() - cdnormal > 5 then
                 ac:attack()
                 cdnormal = tick()
-            else *]]
+            else
                 Animation.AnimationId = ac.anims.basic[2]
                 ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01)
                 game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "")
-            --end
+            end
         end)
     end
 end
