@@ -493,7 +493,8 @@ task.spawn(function()
                                 if v.Name == Data.Mob or v.Name:find(Data.Mob) then
                                     repeat task.wait()
                                         Tween(v.CFrame * CFrame.new(0, 50, 0))
-                                    until Magnitude(v.Position + Vector3.new(0, 50, 0)) <= 3 or not getgenv().Script_Setting['Auto_Farm_Level'] or not IsQuestVisible()
+                                    until Magnitude(v.Position + Vector3.new(0, 50, 0)) <= 1 or not getgenv().Script_Setting['Auto_Farm_Level'] or not IsQuestVisible()
+                                    wait()
                                     if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
                                 end
                             end
