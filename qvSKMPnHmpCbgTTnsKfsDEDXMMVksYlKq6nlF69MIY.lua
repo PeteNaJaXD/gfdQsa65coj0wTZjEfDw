@@ -363,7 +363,7 @@ function Boost()
 end
 
 
-local cdnormal = tick()
+local cdnormal = 0
 local Animation = Instance.new("Animation")
 function Hit()
     local ac = CombatFramework.activeController
@@ -373,8 +373,8 @@ function Hit()
                 ac:attack()
                 cdnormal = tick()
             else
-                Animation.AnimationId = ac.anims.basic[2]
-                ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01)
+                --[[ Animation.AnimationId = ac.anims.basic[2]
+                ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01) *]]
                 game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "")
             end
         end)
