@@ -131,6 +131,7 @@ function TP(pos)
 end
 
 function Tween(Pos, Options)
+    if not Options then = Options {} end
     local CPos = ToCFrame(Pos)
     local PPos =  ToPos(Pos)
     local Distance = Magnitude(PPos)
