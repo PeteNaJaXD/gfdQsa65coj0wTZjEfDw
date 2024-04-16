@@ -409,7 +409,6 @@ end
 function Equip()
     local succes, err = pcall(function()
         GetTool()
-        print(_G.Tool)
         if Humanoid().Health > 0 and GetTool() then
             if not Character():FindFirstChild("HasBuso") then
                 CommF_("Buso")
@@ -493,7 +492,7 @@ task.spawn(function()
                                     repeat task.wait()
                                         Equip()
                                         Tween(ToCFrame(v.HumanoidRootPart.Position) * CFrame.new(0, 50, 0))
-                                    until not getgenv().Script_Setting['Auto_Farm_Level'] or not v.PrimaryPart or not v:IsDescendantOf(game.Workspace.Enemies) or not v or v.Parent == nil or not v.Parent or v.Humanoid.Health < 1 or not v:FindFirstChild('Humanoid') or not v:FindFirstChild('HumanoidRootPart') or not game.Workspace.Enemies:FindFirstChild(Data.Mob) or not IsQuestVisible()
+                                    until not getgenv().Script_Setting['Auto_Farm_Level'] or not v.PrimaryPart or not v:IsDescendantOf(game.Workspace) or not v or v.Parent == nil or not v.Parent or v.Humanoid.Health < 1 or not v:FindFirstChild('Humanoid') or not v:FindFirstChild('HumanoidRootPart') or not game.Workspace.Enemies:FindFirstChild(Data.Mob) or not IsQuestVisible()
                                     if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
                                     _G.BringMob = false
                                 end
