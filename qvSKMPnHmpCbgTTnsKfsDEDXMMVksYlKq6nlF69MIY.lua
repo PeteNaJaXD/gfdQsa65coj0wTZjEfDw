@@ -474,7 +474,7 @@ task.spawn(function()
                         repeat task.wait()
                             Tween(ToCFrame(Data.QuestPos))
                             if Magnitude(ToPos(Data.QuestPos)) <= 3 then
-                                task.wait(.5)
+                                task.wait(.2)
                                 CommF_("StartQuest", Data.QuestName, Data.QuestLevel)
                             end
                         until not getgenv().Script_Setting['Auto_Farm_Level'] or IsQuestVisible()
