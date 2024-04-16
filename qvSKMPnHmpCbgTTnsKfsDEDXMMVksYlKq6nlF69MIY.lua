@@ -393,7 +393,6 @@ function GetTool()
             return v
         end
     end
-    return
 end
 
 function Equip()
@@ -408,7 +407,7 @@ function Equip()
             Attack()
         end
     end)
-    if not succes then warn('Equip Weapon status : ',err) end
+    if not succes then warn('Equip Weapon status : ', err) end
 end
 
 CreateFile()
