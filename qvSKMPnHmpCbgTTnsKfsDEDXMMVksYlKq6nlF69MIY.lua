@@ -399,8 +399,10 @@ end
 function Equip()
     local succes, err = pcall(function()
         GetTool()
-        if Humanoid().Health > 0 and not Character():FindFirstChildOfClass(_G.Tool) and not Character():FindFirstChild("HasBuso") then
-            CommF_("Buso")
+        if Humanoid().Health > 0 and not Character():FindFirstChild(_G.Tool) then
+            if not Character():FindFirstChild("HasBuso") then
+                CommF_("Buso")
+            end
             Humanoid():EquipTool(_G.Tool)
         else
             Attack()
