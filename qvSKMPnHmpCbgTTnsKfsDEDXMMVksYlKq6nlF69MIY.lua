@@ -404,6 +404,8 @@ function Equip()
                 CommF_("Buso")
             end
             Humanoid():EquipTool(Tool)
+        else
+            Attack()
         end
     end)
     if not succes then print('Equip Weapon status : ',succes) end
@@ -478,7 +480,6 @@ task.spawn(function()
                                     _G.Pos = v.HumanoidRootPart.CFrame
                                     _G.BringMob = true
                                     repeat task.wait()
-                                        Attack()
                                         Equip()
                                         Tween(ToCFrame(v.HumanoidRootPart.Position) * CFrame.new(0, 50, 0))
                                     until mixfarm or not getgenv().Script_Setting['Auto_Farm_Level'] or not v.Parent or v.Humanoid.Health <= 0 or not v:FindFirstChild('Humanoid') or not v:FindFirstChild('HumanoidRootPart') or not IsQuestVisible()
