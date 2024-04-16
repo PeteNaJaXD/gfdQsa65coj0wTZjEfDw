@@ -373,7 +373,7 @@ function Hit()
                 ac:attack()
                 Animation.AnimationId = ac.anims.basic[2]
                 ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01)
-                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "") *]]
+                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "")
                 spawn(function()
                     if ac then
                         game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(WeaponModel()))
