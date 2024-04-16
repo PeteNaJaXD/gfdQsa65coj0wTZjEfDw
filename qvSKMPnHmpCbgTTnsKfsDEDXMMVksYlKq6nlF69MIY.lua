@@ -373,7 +373,7 @@ function Hit()
             --if tick() - cdnormal > 7 then
                 ac:attack()
                 spawn(function()
-                    if ac and tick() - cdnormal > 5 then
+                    if ac and tick() - cdnormal > 3 then
                         game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(WeaponModel()))
                         cdnormal = tick()
                     end
@@ -493,7 +493,7 @@ task.spawn(function()
                                     repeat task.wait()
                                         Equip()
                                         Tween(ToCFrame(v.HumanoidRootPart.Position) * CFrame.new(0, 50, 0))
-                                    until mixfarm or not getgenv().Script_Setting['Auto_Farm_Level'] or not v.Parent or v.Humanoid.Health <= 0 or not v:FindFirstChild('Humanoid') or not v:FindFirstChild('HumanoidRootPart') or not IsQuestVisible()
+                                    until not getgenv().Script_Setting['Auto_Farm_Level'] or not v.Parent or v.Humanoid.Health <= 0 or not v:FindFirstChild('Humanoid') or not v:FindFirstChild('HumanoidRootPart') or not game.Workspace.Enemies:FindFirstChild(Data.Mob) or not IsQuestVisible()
                                     if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
                                     _G.BringMob = false
                                 end
