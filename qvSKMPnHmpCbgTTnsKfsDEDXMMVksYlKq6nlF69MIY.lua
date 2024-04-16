@@ -408,7 +408,7 @@ function Equip()
             Attack()
         end
     end)
-    if not succes then print('Equip Weapon status : ',succes) end
+    if not succes then warn('Equip Weapon status : ',succes) end
 end
 
 CreateFile()
