@@ -490,7 +490,7 @@ task.spawn(function()
                                     repeat task.wait()
                                         Tween(v.CFrame * CFrame.new(0, 50, 0))
                                     until Magnitude(v.Position + Vector3.new(0, 50, 0)) <= 1 or not getgenv().Script_Setting['Auto_Farm_Level'] or not IsQuestVisible()
-                                    wait()
+                                    wait(.25)
                                     if not getgenv().Script_Setting['Auto_Farm_Level'] then StopTween() return end
                                 end
                             end
