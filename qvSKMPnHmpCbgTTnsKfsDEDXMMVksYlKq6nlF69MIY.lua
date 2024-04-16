@@ -130,7 +130,7 @@ function TP(pos)
     HumanoidRootPart().CFrame = ToCFrame(pos)
 end
 
-function Tween(Pos,Options)
+function Tween(Pos, Options)
     local CPos = ToCFrame(Pos)
     local PPos =  ToPos(Pos)
     local Distance = Magnitude(PPos)
@@ -152,7 +152,7 @@ function Tween(Pos,Options)
     end
     _G.TweenPlayer = game:GetService("TweenService"):Create(HumanoidRootPart(),TweenInfo.new(Distance/Speed, Enum.EasingStyle.Linear),{CFrame = CPos})
     Humanoid():ChangeState(14)
-    if Magnitude(PPos) <= 150 and Options['Only_Tween'] ~= nil then
+    if Magnitude(PPos) <= 150 and not table.find(Options, 'Only_Tween') then
         _G.TweenPlayer:Cancel()
         TP(CPos)
     else
