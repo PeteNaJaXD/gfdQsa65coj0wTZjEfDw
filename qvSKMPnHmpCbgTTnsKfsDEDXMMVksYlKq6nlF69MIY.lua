@@ -371,7 +371,7 @@ function Hit()
         coroutine.wrap(function()
             --if tick() - cdnormal > 7 then
                 ac:attack()
-                Animation.AnimationId = ac.anims.basic[2]
+                Animation.AnimationId = ac.anims.basic[1]
                 ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01)
                 game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "")
                 spawn(function()
