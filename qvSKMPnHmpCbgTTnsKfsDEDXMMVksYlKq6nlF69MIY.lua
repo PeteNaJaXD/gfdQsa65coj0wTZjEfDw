@@ -406,7 +406,7 @@ function Equip()
             Humanoid():EquipTool(Tool)
         end
     end)
-    if not succes then print('Equip Weapon status : ',succes)
+    if not succes then print('Equip Weapon status : ',succes) end
 end
 
 CreateFile()
