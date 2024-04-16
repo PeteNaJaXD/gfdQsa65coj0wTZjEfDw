@@ -368,16 +368,25 @@ local Animation = Instance.new("Animation")
 function Hit()
     local ac = CombatFramework.activeController
     if ac and ac.equipped then
-        task.spawn(function()
-            if tick() - cdnormal > 7 then
+        coroutine.wrap(function()
+            --if tick() - cdnormal > 7 then
                 ac:attack()
-                cdnormal = tick()
+                Animation.AnimationId = ac.anims.basic[2]
+                ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01)
+                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "") *]]
+                spawn(function()
+                    if ac then
+                        game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(WeaponModel()))
+                    end
+                end)
+                task.wait(.1)
+               -- cdnormal = tick()
             --[[ else
                 Animation.AnimationId = ac.anims.basic[2]
                 ac.humanoid:LoadAnimation(Animation):Play(0.01, 0.01)
                 game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(60), 1, "") *]]
-            end
-        end)
+            --end
+        end)()
     end
 end
 
