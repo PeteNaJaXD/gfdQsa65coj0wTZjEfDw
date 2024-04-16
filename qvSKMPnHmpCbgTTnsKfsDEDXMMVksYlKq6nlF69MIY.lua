@@ -383,7 +383,7 @@ end
 
 function Attack()
     Hit()
-    Boost()
+    --Boost()
 end
 
 function GetTool()
