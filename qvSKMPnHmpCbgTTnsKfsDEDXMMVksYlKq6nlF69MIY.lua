@@ -152,7 +152,7 @@ function Tween(Pos,Options)
     end
     _G.TweenPlayer = game:GetService("TweenService"):Create(HumanoidRootPart(),TweenInfo.new(Distance/Speed, Enum.EasingStyle.Linear),{CFrame = CPos})
     Humanoid():ChangeState(14)
-    if Magnitude(PPos) <= 150 and not Options['Only_Tween'] then
+    if Magnitude(PPos) <= 150 and Options['Only_Tween'] ~= nil then
         _G.TweenPlayer:Cancel()
         TP(CPos)
     else
