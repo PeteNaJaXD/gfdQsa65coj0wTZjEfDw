@@ -455,7 +455,7 @@ Group.Setting_Group:AddDropdown('Select Weapon', {
 	Text = 'Select Weapon',
 	Values = {"Melee","Blox Fruit","Sword","Gun"},
 	Default = getgenv().Script_Setting['Selected_Weapon'] or 'Melee'
-]}):OnChanged(function(v)
+}):OnChanged(function(v)
     getgenv().Script_Setting['Selected_Weapon'] = v
 	SaveSetting()
 end) 
