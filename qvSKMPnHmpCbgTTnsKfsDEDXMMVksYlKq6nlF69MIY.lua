@@ -373,7 +373,7 @@ function Hit()
             --if tick() - cdnormal > 7 then
                 ac:attack()
                 spawn(function()
-                    if ac and tick() - cdnormal > 3 then
+                    if ac and tick() - cdnormal > 1 then
                         game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(WeaponModel()))
                         cdnormal = tick()
                     end
